@@ -1,0 +1,48 @@
+<!doctype html>
+<!--
+  WHERE THIS GOES
+  - Vite project: this IS your root index.html — replace the existing one.
+  - Create React App project: copy the <head> contents below into
+    public/index.html (keep CRA's %PUBLIC_URL% placeholders as-is there).
+
+  LOGO FILES YOU STILL NEED TO ADD
+  Put these three files in your project's /public folder once you have real
+  artwork (any square PNG works to start):
+    /public/favicon.png        (32x32 or 64x64 — tab icon)
+    /public/apple-touch-icon.png (180x180 — iOS home screen icon)
+    /public/og-image.png       (1200x630 — the image shown when the link
+                                is shared or found in search)
+  Until then, the tab icon still works because FocusChaos.jsx injects an SVG
+  favicon at runtime (useFavicon in the app code) — this file's <link> tags
+  below simply take priority once you drop in real files.
+-->
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>ФокусХаос — планировщик задач для СДВГ и прокрастинации</title>
+    <meta name="description" content="ФокусХаос — планировщик, который разбивает пугающие цели на маленькие шаги с помощью ИИ. Для тех, кому обычные to-do списки не подходят: борьба с прокрастинацией, СДВГ-дружелюбный интерфейс, таймер фокуса, награды за прогресс." />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph (how the link looks when shared / in search previews) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ФокусХаос — тёплая система фокуса для занятого мозга" />
+    <meta property="og:description" content="Разбивай цели на шаги вместе с Гришей, держи фокус на таймере, собирай награды." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:locale" content="ru_RU" />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ФокусХаос" />
+    <meta name="twitter:description" content="Тёплая система фокуса для занятого мозга." />
+    <meta name="twitter:image" content="/og-image.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

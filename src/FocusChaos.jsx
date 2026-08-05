@@ -251,9 +251,9 @@ const GlobalStyle = () => (
 /*  Category visual accents (independent of language)                     */
 /* ---------------------------------------------------------------------- */
 const CATEGORY_STYLE = {
-  work: { grad: 'linear-gradient(135deg,#A855F7,#7C3AED)', ring: 'rgba(168,85,247,0.65)', icon: Briefcase },
-  fitness: { grad: 'linear-gradient(135deg,#FB923C,#EA580C)', ring: 'rgba(251,146,60,0.65)', icon: Dumbbell },
-  personal: { grad: 'linear-gradient(135deg,#EC4899,#DB2777)', ring: 'rgba(236,72,153,0.65)', icon: Home },
+  work: { grad: 'linear-gradient(135deg,#A797C4,#8A7BA8)', ring: 'rgba(138,123,168,0.55)', icon: Briefcase },
+  fitness: { grad: 'linear-gradient(135deg,#E8A0AC,#D4798A)', ring: 'rgba(212,121,138,0.55)', icon: Dumbbell },
+  personal: { grad: 'linear-gradient(135deg,#A8BC96,#8FA482)', ring: 'rgba(143,164,130,0.55)', icon: Home },
   clients: { grad: 'linear-gradient(135deg,#38BDF8,#0284C7)', ring: 'rgba(56,189,248,0.65)', icon: Users },
   projects: { grad: 'linear-gradient(135deg,#A855F7,#7C3AED)', ring: 'rgba(168,85,247,0.65)', icon: FolderKanban },
   finance: { grad: 'linear-gradient(135deg,#34D399,#059669)', ring: 'rgba(52,211,153,0.65)', icon: Wallet },

@@ -117,26 +117,20 @@ const GlobalStyle = () => (
     .fc-display { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
     .fc-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 
-    .fc-blob { position: fixed; border-radius: 9999px; filter: blur(40px); pointer-events: none; z-index: 0; mix-blend-mode: screen; will-change: transform; }
+    .fc-blob { display: none; }
 
     .fc-card {
       position: relative;
-      background: linear-gradient(180deg, rgba(20,28,45,0.72), rgba(15,20,32,0.8));
-      border: 1px solid rgba(148,163,184,0.12);
-      transition: border-color .25s ease, box-shadow .25s ease;
+      background: #FFFFFF;
+      border: 1px solid #E7E9ED;
+      transition: border-color .2s ease, box-shadow .2s ease;
+      box-shadow: 0 1px 2px rgba(20,25,35,0.04);
     }
-    .fc-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 40%);
-      pointer-events: none;
-    }
-    .fc-glow-mint { box-shadow: 0 0 0 1px rgba(16,185,129,0.1), 0 0 44px -16px rgba(16,185,129,0.55); }
-    .fc-glow-mint:hover { border-color: rgba(52,211,153,0.55); box-shadow: 0 0 0 1px rgba(16,185,129,0.22), 0 0 50px -10px rgba(16,185,129,0.65); }
-    .fc-glow-amber { box-shadow: 0 0 0 1px rgba(245,158,11,0.1), 0 0 44px -16px rgba(245,158,11,0.5); }
-    .fc-glow-amber:hover { border-color: rgba(251,191,36,0.55); box-shadow: 0 0 0 1px rgba(245,158,11,0.22), 0 0 50px -10px rgba(245,158,11,0.6); }
+    .fc-card::before { content: none; }
+    .fc-glow-mint { }
+    .fc-glow-mint:hover { border-color: #B5D4F4; box-shadow: 0 4px 16px -6px rgba(55,138,221,0.25); }
+    .fc-glow-amber { }
+    .fc-glow-amber:hover { border-color: #FAC775; box-shadow: 0 4px 16px -6px rgba(239,159,39,0.25); }
 
     @keyframes fc-cta-pulse {
       0%, 100% { box-shadow: 0 0 22px -2px rgba(249,115,22,0.75), 0 0 0 0 rgba(249,115,22,0.4); }
@@ -1286,16 +1280,16 @@ function WeekStrip({ t, selectedDate, setSelectedDate, tasksByDate, onOpenCalend
       <button
         key={key}
         onClick={() => setSelectedDate(key)}
-        className={`flex flex-col items-center gap-1 px-1 sm:px-3 py-2 rounded-xl flex-1 sm:flex-shrink-0 sm:min-w-[52px] min-w-0 backdrop-blur-sm transition border ${
-          isSelected ? 'bg-slate-800/40 border-emerald-400' : 'bg-slate-800/40 border-slate-700 text-slate-300 hover:border-slate-500'
+        className={`flex flex-col items-center gap-1 px-1 sm:px-3 py-2 rounded-xl flex-1 sm:flex-shrink-0 sm:min-w-[52px] min-w-0 transition border ${
+          isSelected ? 'border-transparent text-white' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'
         }`}
-        style={isSelected ? { color: '#5EEAD4', boxShadow: '0 0 12px -3px rgba(52,211,153,0.8)' } : {}}
+        style={isSelected ? { background: '#378ADD' } : {}}
       >
         <span className="fc-mono text-[9px] tracking-wide opacity-80">{t.weekdaysShort[i % 7]}</span>
         <span className="text-sm font-bold">{d.getDate()}</span>
         <span
           className={`w-1 h-1 rounded-full ${hasTasks ? '' : 'opacity-0'}`}
-          style={{ background: isSelected ? '#5EEAD4' : isToday ? '#F59E0B' : '#64748b' }}
+          style={{ background: isSelected ? '#FFFFFF' : isToday ? '#D85A30' : '#94a3b8' }}
         />
       </button>
     );
@@ -1306,7 +1300,7 @@ function WeekStrip({ t, selectedDate, setSelectedDate, tasksByDate, onOpenCalend
       <div className="fc-card fc-glow-mint rounded-2xl px-2 sm:px-4 py-3 flex items-center gap-1 sm:gap-2 sm:overflow-x-auto">
         <button
           onClick={() => shiftWindow(-14)}
-          className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-slate-950/50 border border-slate-700 text-slate-400 hover:border-emerald-400/50 hover:text-emerald-300 transition"
+          className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600 transition"
           aria-label={t.prevWeeks}
           title={t.prevWeeks}
         >
@@ -1316,7 +1310,7 @@ function WeekStrip({ t, selectedDate, setSelectedDate, tasksByDate, onOpenCalend
         <div className="hidden lg:contents">{week2Dates.map((d, i) => renderDay(d, i))}</div>
         <button
           onClick={() => shiftWindow(14)}
-          className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-slate-950/50 border border-slate-700 text-slate-400 hover:border-emerald-400/50 hover:text-emerald-300 transition"
+          className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600 transition"
           aria-label={t.nextWeeks}
           title={t.nextWeeks}
         >
@@ -1324,7 +1318,7 @@ function WeekStrip({ t, selectedDate, setSelectedDate, tasksByDate, onOpenCalend
         </button>
         <button
           onClick={onOpenCalendar}
-          className="hidden sm:flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl bg-slate-950/50 border border-slate-700 text-slate-400 hover:border-emerald-400/50 hover:text-emerald-300 transition ml-1"
+          className="hidden sm:flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600 transition ml-1"
           aria-label={t.openCalendar}
           title={t.openCalendar}
         >
@@ -1333,7 +1327,7 @@ function WeekStrip({ t, selectedDate, setSelectedDate, tasksByDate, onOpenCalend
       </div>
       <button
         onClick={onOpenCalendar}
-        className="sm:hidden w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-slate-900/85 border border-slate-700 text-slate-300 text-xs font-bold py-2 transition active:scale-95"
+        className="sm:hidden w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-bold py-2 transition active:scale-95"
       >
         <CalendarDays size={14} />
         {t.openCalendar}
@@ -1477,7 +1471,7 @@ function HHMMInput({ value, onChange, accent = '#F59E0B', className = '' }) {
   };
 
   return (
-    <div className={`flex items-center gap-1 rounded-lg bg-slate-950/80 border border-slate-700 px-2 py-2.5 flex-shrink-0 ${className}`}>
+    <div className={`flex items-center gap-1 rounded-lg bg-white border border-slate-200 px-2 py-2.5 flex-shrink-0 ${className}`}>
       <input
         type="text"
         inputMode="numeric"
@@ -1485,10 +1479,10 @@ function HHMMInput({ value, onChange, accent = '#F59E0B', className = '' }) {
         value={hh}
         onChange={(e) => commit(e.target.value.replace(/\D/g, ''), mm)}
         onBlur={(e) => commit(e.target.value, mm)}
-        className="w-5 bg-transparent text-slate-100 text-sm text-center outline-none"
+        className="w-5 bg-transparent text-slate-800 text-sm text-center outline-none"
         aria-label="HH"
       />
-      <span className="text-slate-500 text-sm font-bold" style={{ color: accent }}>:</span>
+      <span className="text-sm font-bold" style={{ color: accent }}>:</span>
       <input
         type="text"
         inputMode="numeric"
@@ -1496,7 +1490,7 @@ function HHMMInput({ value, onChange, accent = '#F59E0B', className = '' }) {
         value={mm}
         onChange={(e) => commit(hh, e.target.value.replace(/\D/g, ''))}
         onBlur={(e) => commit(hh, e.target.value)}
-        className="w-5 bg-transparent text-slate-100 text-sm text-center outline-none"
+        className="w-5 bg-transparent text-slate-800 text-sm text-center outline-none"
         aria-label="MM"
       />
     </div>
@@ -1533,33 +1527,32 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
   return (
     <div className="fc-card fc-glow-amber rounded-3xl p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="fc-display text-lg font-bold text-white">{t.timelineTitle}</h3>
-        <span className="fc-mono text-[10px] text-slate-400">{pct}%</span>
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.timelineTitle}</h3>
+        <span className="fc-mono text-[10px] text-slate-500">{pct}%</span>
       </div>
-      <div className="w-full h-3 rounded-full bg-slate-800/80 overflow-hidden mb-4 border border-slate-700/50">
+      <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden mb-4 border border-slate-200">
         <div
           className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#F59E0B,#FBBF24)', boxShadow: pct > 0 ? '0 0 10px -1px rgba(245,158,11,0.8)' : 'none' }}
+          style={{ width: `${pct}%`, background: '#D85A30' }}
         />
       </div>
 
-      <div className="space-y-3 mb-4 fc-scrollbar overflow-y-auto" style={{ maxHeight: 420 }}>
+      <div className="space-y-2 mb-4 fc-scrollbar overflow-y-auto" style={{ maxHeight: 420 }}>
         {SLOT_HOURS.map((h) => {
           const slotTasks = tasks.filter((task) => slotForMinutes(timeToMinutes(task.time)) === h);
           const hasTasks = slotTasks.length > 0;
           return (
             <div
               key={h}
-              className="rounded-2xl border px-4 py-3.5 transition"
+              className="rounded-xl border px-4 py-3 transition"
               style={{
-                background: hasTasks ? 'rgba(245,158,11,0.06)' : 'rgba(15,23,42,0.35)',
-                borderColor: hasTasks ? 'rgba(251,191,36,0.3)' : 'rgba(148,163,184,0.12)',
-                boxShadow: hasTasks ? '0 4px 20px -8px rgba(245,158,11,0.35)' : 'none',
+                background: hasTasks ? '#FAFBFC' : '#FCFCFD',
+                borderColor: hasTasks ? '#E7E9ED' : '#EFF1F4',
               }}
             >
-              <span className="fc-mono text-[11px] font-bold tracking-widest text-amber-300/90">{String(h).padStart(2, '0')}:00</span>
+              <span className="fc-mono text-[11px] font-bold tracking-widest text-slate-400">{String(h).padStart(2, '0')}:00</span>
 
-              {!hasTasks && <p className="text-[13px] text-slate-500 italic mt-1.5">{t.slotFreeText}</p>}
+              {!hasTasks && <p className="text-[13px] text-slate-400 italic mt-1.5">{t.slotFreeText}</p>}
 
               {hasTasks && (
                 <div className="mt-2 space-y-2">
@@ -1567,8 +1560,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                     const isNew = !seenTaskIds.current.has(task.id);
                     seenTaskIds.current.add(task.id);
                     const catStyle = task.category ? CATEGORY_STYLE[task.category] : null;
-                    const accent = catStyle ? catStyle.ring.replace('0.65', '0.5') : 'rgba(245,158,11,0.5)';
-                    const accentSolid = catStyle ? catStyle.ring.replace('0.65', '1') : '#FBBF24';
+                    const accentSolid = catStyle ? catStyle.grad.match(/#[0-9A-Fa-f]{6}/)[0] : '#D85A30';
                     const isEditing = editingTaskId === task.id;
 
                     if (isEditing) {
@@ -1578,7 +1570,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                         setEditingTaskId(null);
                       };
                       return (
-                        <div key={task.id} className="flex items-center gap-2 rounded-xl px-3 py-2 border border-amber-400/50 bg-slate-950/70">
+                        <div key={task.id} className="flex items-center gap-2 rounded-xl px-3 py-2 border border-slate-300 bg-white">
                           <HHMMInput value={editTimeDraft} onChange={setEditTimeDraft} className="py-1" />
                           <input
                             autoFocus
@@ -1588,12 +1580,12 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                               if (e.key === 'Enter') saveEdit();
                               if (e.key === 'Escape') setEditingTaskId(null);
                             }}
-                            className="flex-1 bg-transparent text-sm text-white outline-none"
+                            className="flex-1 bg-transparent text-sm text-slate-800 outline-none"
                           />
-                          <button onClick={saveEdit} className="text-amber-400 hover:text-amber-300 flex-shrink-0 p-1" aria-label={t.saveEdit}>
+                          <button onClick={saveEdit} className="text-emerald-600 hover:text-emerald-500 flex-shrink-0 p-1" aria-label={t.saveEdit}>
                             <Check size={16} />
                           </button>
-                          <button onClick={() => setEditingTaskId(null)} className="text-slate-500 hover:text-slate-300 flex-shrink-0 p-1" aria-label={t.cancelEdit}>
+                          <button onClick={() => setEditingTaskId(null)} className="text-slate-400 hover:text-slate-600 flex-shrink-0 p-1" aria-label={t.cancelEdit}>
                             <X size={16} />
                           </button>
                         </div>
@@ -1610,24 +1602,20 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                             }
                             onToggleTask(selectedDate, task.id);
                           }}
-                          className={`w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 pr-16 text-left text-sm transition border ${isNew ? 'fc-magnet-in' : ''} ${
-                            task.done ? 'text-slate-400' : 'bg-slate-950/70 text-slate-200'
+                          className={`w-full flex items-center gap-2.5 rounded-lg pl-3 pr-16 py-2.5 text-left text-sm transition border-l-4 ${isNew ? 'fc-magnet-in' : ''} ${
+                            task.done ? 'text-slate-400' : 'text-slate-700'
                           }`}
-                          style={
-                            task.done
-                              ? { background: catStyle ? `${catStyle.grad.match(/#[0-9A-Fa-f]{6}/)[0]}22` : 'rgba(245,158,11,0.15)', borderColor: accent }
-                              : { borderColor: catStyle ? 'rgba(148,163,184,0.3)' : 'rgb(51,65,85)' }
-                          }
+                          style={{ background: `${accentSolid}14`, borderLeftColor: accentSolid, borderRadius: '0 8px 8px 0' }}
                         >
                           <span className="relative flex-shrink-0">
                             <span
                               className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center ${justCompletedTaskId === task.id ? 'fc-triumph-flash' : ''}`}
                               style={{ background: task.done ? accentSolid : 'transparent', borderColor: accentSolid }}
                             >
-                              {task.done && <Check size={11} className="text-slate-950" strokeWidth={3.5} />}
+                              {task.done && <Check size={11} className="text-white" strokeWidth={3.5} />}
                             </span>
                             {justCompletedTaskId === task.id && (
-                              <span className="fc-float-xp absolute left-1/2 -top-1 fc-mono text-[10px] font-bold text-amber-300 whitespace-nowrap pointer-events-none" style={{ textShadow: '0 0 8px rgba(245,158,11,0.9)' }}>
+                              <span className="fc-float-xp absolute left-1/2 -top-1 fc-mono text-[10px] font-bold whitespace-nowrap pointer-events-none" style={{ color: accentSolid }}>
                                 {t.xpPopup}
                               </span>
                             )}
@@ -1643,7 +1631,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                               setEditTimeDraft(task.time);
                               setEditingTaskId(task.id);
                             }}
-                            className="text-slate-500 hover:text-slate-300 p-1.5"
+                            className="text-slate-400 hover:text-slate-600 p-1.5"
                             aria-label={t.editStep}
                             title={t.editStep}
                           >
@@ -1654,7 +1642,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                               e.stopPropagation();
                               onDeleteTask(selectedDate, task.id);
                             }}
-                            className="text-slate-500 hover:text-rose-400 p-1.5"
+                            className="text-slate-400 hover:text-rose-500 p-1.5"
                             aria-label={t.deleteQuest}
                             title={t.deleteQuest}
                           >
@@ -1671,12 +1659,12 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
         })}
       </div>
 
-      <div className="flex items-center gap-2 mt-5 pt-4 border-t border-slate-800">
-        <HHMMInput value={newTime} onChange={setNewTime} />
+      <div className="flex items-center gap-2 mt-5 pt-4 border-t border-slate-100">
+        <HHMMInput value={newTime} onChange={setNewTime} accent="#D85A30" />
         <button
           type="button"
           onClick={() => setHourGridOpen((v) => !v)}
-          className="w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center text-slate-500 hover:text-amber-300 hover:border-amber-400/40 border border-slate-700 bg-slate-950/80 transition"
+          className="w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center text-slate-400 hover:text-amber-600 hover:border-amber-300 border border-slate-200 bg-white transition"
           aria-label={t.quickTimeLabel}
           title={t.quickTimeLabel}
         >
@@ -1688,13 +1676,13 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
           onChange={(e) => setNewText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           placeholder={t.addTaskPlaceholder}
-          className="flex-1 rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2.5 text-slate-100 placeholder-slate-600 text-sm outline-none focus:ring-2 focus:ring-amber-500/30 transition"
+          className="flex-1 rounded-lg bg-white border border-slate-200 px-3 py-2.5 text-slate-800 placeholder-slate-400 text-sm outline-none focus:ring-2 focus:ring-amber-400/30 transition"
         />
         <button
           onClick={handleAdd}
           disabled={!newText.trim()}
-          className="rounded-lg px-4 py-2.5 text-sm font-bold flex-shrink-0 transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ background: 'linear-gradient(135deg,#FBBF24,#F59E0B)', color: '#0f172a', boxShadow: '0 0 22px -3px rgba(245,158,11,0.75)' }}
+          className="rounded-lg px-4 py-2.5 text-sm font-bold flex-shrink-0 transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+          style={{ background: '#D85A30' }}
         >
           <Plus size={16} />
         </button>
@@ -1708,9 +1696,8 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                 key={h}
                 onClick={() => setNewTime(hStr)}
                 className={`px-2 py-1.5 rounded-lg text-xs font-bold transition border ${
-                  newTime === hStr ? 'text-amber-200 border-amber-400/70 bg-amber-500/10' : 'bg-slate-950/70 border-slate-700 text-slate-400 hover:border-amber-400/40'
+                  newTime === hStr ? 'text-amber-700 border-amber-300 bg-amber-50' : 'bg-white border-slate-200 text-slate-500 hover:border-amber-300'
                 }`}
-                style={newTime === hStr ? { boxShadow: '0 0 12px -3px rgba(245,158,11,0.7)' } : {}}
               >
                 {hStr}
               </button>
@@ -2995,7 +2982,7 @@ export default function FocusChaos() {
   }
 
   return (
-    <div className="fc-root min-h-screen text-slate-100 px-4 py-6 sm:px-6 relative overflow-hidden" style={{ background: 'radial-gradient(ellipse 120% 80% at 50% -10%, #1b2436 0%, #10151f 55%, #0b0f19 100%)' }}>
+    <div className="fc-root min-h-screen text-slate-800 px-4 py-6 sm:px-6 relative overflow-hidden" style={{ background: '#F7F8FA' }}>
       <GlobalStyle />
       <AmbientGlow />
 
@@ -3018,27 +3005,27 @@ export default function FocusChaos() {
       <ReminderToast t={t} toast={toast} onDismiss={() => setToast(null)} />
 
       <div className="max-w-5xl mx-auto relative z-10">
-        <header className="fc-fade-up mb-4 pb-4 border-b border-slate-800/70">
+        <header className="fc-fade-up mb-4 pb-4 border-b border-slate-200">
           <div className="flex items-start justify-between flex-wrap gap-y-4">
             <div>
               <div className="flex items-center gap-3 mb-3">
                 {/* LOGO SLOT — app mark. Swap the <Zap> icon below for an <img> tag
                     pointing at your own logo file whenever you have one ready. */}
                 <div
-                  className="w-11 h-11 rounded-xl bg-slate-900/85 border flex items-center justify-center flex-shrink-0"
-                  style={{ borderColor: 'rgba(45,212,191,0.6)', color: '#5EEAD4', boxShadow: '0 0 18px -3px rgba(45,212,191,0.7)' }}
+                  className="w-11 h-11 rounded-xl border flex items-center justify-center flex-shrink-0"
+                  style={{ background: '#E6F1FB', borderColor: '#B5D4F4', color: '#185FA5' }}
                 >
                   <Zap size={20} strokeWidth={2} />
                 </div>
                 <div>
-                  <h1 className="fc-display text-xl font-extrabold leading-none text-white tracking-tight">{t.appName}</h1>
-                  <p className="fc-mono text-[10px] text-slate-400 mt-1.5 tracking-wide">{t.tagline}</p>
+                  <h1 className="fc-display text-xl font-extrabold leading-none text-slate-900 tracking-tight">{t.appName}</h1>
+                  <p className="fc-mono text-[10px] text-slate-500 mt-1.5 tracking-wide">{t.tagline}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setTipsOpen(true)}
-                  className="w-9 h-9 rounded-full bg-slate-900/85 border border-amber-400/30 text-amber-300 flex items-center justify-center transition hover:border-amber-400/60"
+                  className="w-9 h-9 rounded-full bg-white border border-slate-200 text-amber-600 flex items-center justify-center transition hover:border-amber-300"
                   aria-label={t.tipsButton}
                   title={t.tipsButton}
                 >
@@ -3046,7 +3033,7 @@ export default function FocusChaos() {
                 </button>
                 <button
                   onClick={() => setGuideOpen(true)}
-                  className="w-9 h-9 rounded-full bg-slate-900/85 border border-emerald-400/30 text-emerald-300 flex items-center justify-center transition hover:border-emerald-400/60"
+                  className="w-9 h-9 rounded-full bg-white border border-slate-200 text-emerald-600 flex items-center justify-center transition hover:border-emerald-300"
                   aria-label={t.guideButton}
                   title={t.guideButton}
                 >
@@ -3054,7 +3041,7 @@ export default function FocusChaos() {
                 </button>
                 <button
                   onClick={() => setMoreOpen(true)}
-                  className="w-9 h-9 rounded-full bg-slate-900/85 border border-slate-600 text-slate-300 flex items-center justify-center transition hover:border-slate-400"
+                  className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-500 flex items-center justify-center transition hover:border-slate-300"
                   aria-label={t.reviewsTitle}
                   title={t.reviewsTitle}
                 >
@@ -3077,18 +3064,18 @@ export default function FocusChaos() {
           <button
             onClick={() => setTab('focus')}
             className={`flex-1 rounded-xl px-4 py-3 text-sm font-bold transition border ${
-              tab === 'focus' ? 'text-slate-950 border-transparent' : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:border-slate-500'
+              tab === 'focus' ? 'text-white border-transparent' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
             }`}
-            style={tab === 'focus' ? { background: 'linear-gradient(135deg,#34D399,#2DD4BF)', boxShadow: '0 0 18px -4px rgba(45,212,191,0.6)' } : {}}
+            style={tab === 'focus' ? { background: '#378ADD' } : {}}
           >
             {t.tabFocus}
           </button>
           <button
             onClick={() => setTab('rewards')}
             className={`flex-1 rounded-xl px-4 py-3 text-sm font-bold transition border ${
-              tab === 'rewards' ? 'text-slate-950 border-transparent' : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:border-slate-500'
+              tab === 'rewards' ? 'text-white border-transparent' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
             }`}
-            style={tab === 'rewards' ? { background: 'linear-gradient(135deg,#FBBF24,#F59E0B)', boxShadow: '0 0 18px -4px rgba(245,158,11,0.6)' } : {}}
+            style={tab === 'rewards' ? { background: '#D85A30' } : {}}
           >
             {t.tabRewards}
           </button>

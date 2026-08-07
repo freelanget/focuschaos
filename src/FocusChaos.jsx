@@ -418,6 +418,10 @@ const T = {
     medal1Desc: 'Заверши первую задачу',
     medalCupName: 'Чаша спокойствия',
     cupSeasonLabel: 'Сезон 1 · Июль 2026',
+    shopTitle: 'Магазин Гриши',
+    shopComingSoon: 'Скоро здесь можно будет тратить накопленный опыт на обновления для Гриши. Пока копите XP!',
+    energyLabel: 'Энергия',
+    dayClearedLabel: 'День пройден на 100%!',
     levelUpPhrase: (lvl) => `Уровень ${lvl}! Растёшь быстрее, чем я ожидал.`,
     levelLabel: (lvl) => `Ур. ${lvl}`,
     xpLabel: (cur, max) => `${cur}/${max} XP`,
@@ -642,6 +646,10 @@ const T = {
     medal1Desc: 'Finish your first task',
     medalCupName: 'Cup of Calm',
     cupSeasonLabel: 'Season 1 · July 2026',
+    shopTitle: "Grisha's shop",
+    shopComingSoon: "Soon you'll be able to spend your saved-up XP on upgrades for Grisha. Keep stacking XP for now!",
+    energyLabel: 'Energy',
+    dayClearedLabel: 'Day fully cleared!',
     levelUpPhrase: (lvl) => `Level ${lvl}! You're leveling up faster than I expected.`,
     levelLabel: (lvl) => `Lv. ${lvl}`,
     xpLabel: (cur, max) => `${cur}/${max} XP`,
@@ -923,6 +931,20 @@ function Modal({ open, onClose, children }) {
         {children}
       </div>
     </div>
+  );
+}
+
+function ShopModal({ t, open, onClose }) {
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="flex items-center gap-2 mb-3 text-violet-600">
+        <Star size={18} />
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.shopTitle}</h3>
+      </div>
+      <div className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-4 text-center">
+        <p className="text-sm text-slate-500">{t.shopComingSoon}</p>
+      </div>
+    </Modal>
   );
 }
 
@@ -1405,18 +1427,23 @@ function MiniCalendar({ t, selectedDate, setSelectedDate, tasksByDate }) {
           const inMonth = d.getMonth() === viewMonth;
           const isSelected = key === selectedDate;
           const isToday = key === today;
-          const hasTasks = (tasksByDate[key] || []).length > 0;
+          const dayTasks = tasksByDate[key] || [];
+          const hasTasks = dayTasks.length > 0;
+          const allDone = hasTasks && dayTasks.every((tsk) => tsk.done);
           return (
             <button
               key={key}
               onClick={() => setSelectedDate(key)}
-              className={`aspect-square rounded-lg text-[11px] flex flex-col items-center justify-center gap-0.5 border transition ${
+              className={`relative aspect-square rounded-lg text-[11px] flex flex-col items-center justify-center gap-0.5 border transition ${
                 !inMonth ? 'text-slate-300 border-transparent' : isSelected ? 'font-bold border-emerald-400' : isToday ? 'text-emerald-600 font-bold border-transparent' : 'text-slate-600 border-transparent hover:bg-slate-100'
               }`}
               style={isSelected ? { color: '#0F6E56', background: '#E1F5EE' } : {}}
             >
+              {allDone && inMonth && (
+                <span className="absolute top-0.5 right-0.5 text-[9px] leading-none" title={t.dayClearedLabel} aria-hidden="true">✨</span>
+              )}
               <span>{d.getDate()}</span>
-              <span className="w-1 h-1 rounded-full" style={{ background: hasTasks && inMonth ? '#EF9F27' : 'transparent' }} />
+              <span className="w-1 h-1 rounded-full" style={{ background: hasTasks && inMonth && !allDone ? '#EF9F27' : 'transparent' }} />
             </button>
           );
         })}
@@ -1590,6 +1617,8 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
     setSelectedDate(dateKeyOf(d));
   };
   const today = todayKey();
+  const now = new Date();
+  const currentHour = now.getHours();
 
   const tasks = (tasksByDate[selectedDate] || []).slice().sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
   const doneCount = tasks.filter((x) => x.done).length;
@@ -1635,6 +1664,53 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
         </div>
       </div>
 
+      <div className="flex items-center gap-2 mb-4">
+        <HHMMInput value={newTime} onChange={setNewTime} accent="#F2765C" />
+        <button
+          type="button"
+          onClick={() => setHourGridOpen((v) => !v)}
+          className="w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center text-slate-400 hover:text-amber-600 hover:border-amber-300 border border-slate-200 bg-white transition"
+          aria-label={t.quickTimeLabel}
+          title={t.quickTimeLabel}
+        >
+          <TimerIcon size={14} />
+        </button>
+        <input
+          type="text"
+          value={newText}
+          onChange={(e) => setNewText(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+          placeholder={t.addTaskPlaceholder}
+          className="flex-1 rounded-lg bg-white border border-slate-200 px-3 py-2.5 text-slate-800 placeholder-slate-400 text-sm outline-none focus:ring-2 focus:ring-amber-400/30 transition"
+        />
+        <button
+          onClick={handleAdd}
+          disabled={!newText.trim()}
+          className="rounded-lg px-4 py-2.5 text-sm font-bold flex-shrink-0 transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+          style={{ background: '#F2765C' }}
+        >
+          <Plus size={16} />
+        </button>
+      </div>
+      {hourGridOpen && (
+        <div className="fc-slide-down grid grid-cols-6 gap-1.5 mb-4">
+          {ALL_HOURS.map((h) => {
+            const hStr = `${String(h).padStart(2, '0')}:00`;
+            return (
+              <button
+                key={h}
+                onClick={() => setNewTime(hStr)}
+                className={`px-2 py-1.5 rounded-lg text-xs font-bold transition border ${
+                  newTime === hStr ? 'text-amber-700 border-amber-300 bg-amber-50' : 'bg-white border-slate-200 text-slate-500 hover:border-amber-300'
+                }`}
+              >
+                {hStr}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Week grid — day columns across the top, hours down the left, tasks as colored chips */}
       <div className="fc-scrollbar overflow-x-auto">
         <div className="min-w-[640px]">
@@ -1667,8 +1743,19 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
           </div>
 
           <div className="fc-scrollbar overflow-y-auto" style={{ maxHeight: 440 }}>
-            {GRID_HOURS.map((h) => (
-              <div key={h} className="grid border-t border-slate-100" style={{ gridTemplateColumns: '48px repeat(7, minmax(0, 1fr))', minHeight: 40 }}>
+            {GRID_HOURS.map((h) => {
+              const isPastHour = h < currentHour;
+              const isCurrentHour = h === currentHour;
+              return (
+              <div
+                key={h}
+                className={`grid border-t transition-opacity ${isCurrentHour ? 'border-violet-200' : 'border-slate-100'} ${isPastHour ? 'opacity-60' : ''}`}
+                style={{
+                  gridTemplateColumns: '48px repeat(7, minmax(0, 1fr))',
+                  minHeight: 40,
+                  ...(isCurrentHour ? { boxShadow: 'inset 0 0 0 1px #F2765C33', background: '#FDF6F4' } : {}),
+                }}
+              >
                 <div className="fc-mono text-[9px] text-slate-300 pt-1 pr-2 text-right">{String(h).padStart(2, '0')}:00</div>
                 {weekDates.map((d) => {
                   const key = dateKeyOf(d);
@@ -1709,57 +1796,11 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
                   );
                 })}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
-
-      <div className="flex items-center gap-2 mt-5 pt-4 border-t border-slate-100">
-        <HHMMInput value={newTime} onChange={setNewTime} accent="#F2765C" />
-        <button
-          type="button"
-          onClick={() => setHourGridOpen((v) => !v)}
-          className="w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center text-slate-400 hover:text-amber-600 hover:border-amber-300 border border-slate-200 bg-white transition"
-          aria-label={t.quickTimeLabel}
-          title={t.quickTimeLabel}
-        >
-          <TimerIcon size={14} />
-        </button>
-        <input
-          type="text"
-          value={newText}
-          onChange={(e) => setNewText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-          placeholder={t.addTaskPlaceholder}
-          className="flex-1 rounded-lg bg-white border border-slate-200 px-3 py-2.5 text-slate-800 placeholder-slate-400 text-sm outline-none focus:ring-2 focus:ring-amber-400/30 transition"
-        />
-        <button
-          onClick={handleAdd}
-          disabled={!newText.trim()}
-          className="rounded-lg px-4 py-2.5 text-sm font-bold flex-shrink-0 transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white"
-          style={{ background: '#F2765C' }}
-        >
-          <Plus size={16} />
-        </button>
-      </div>
-      {hourGridOpen && (
-        <div className="fc-slide-down grid grid-cols-6 gap-1.5 mt-3">
-          {ALL_HOURS.map((h) => {
-            const hStr = `${String(h).padStart(2, '0')}:00`;
-            return (
-              <button
-                key={h}
-                onClick={() => setNewTime(hStr)}
-                className={`px-2 py-1.5 rounded-lg text-xs font-bold transition border ${
-                  newTime === hStr ? 'text-amber-700 border-amber-300 bg-amber-50' : 'bg-white border-slate-200 text-slate-500 hover:border-amber-300'
-                }`}
-              >
-                {hStr}
-              </button>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
@@ -1782,7 +1823,7 @@ function QuickNotes({ t, notes, setNotes }) {
   );
 }
 
-function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQuests, onTaskCompleted, onActivity, onQuestGenerated, xp, onAwardXP, levelUpMessage, streak }) {
+function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQuests, onTaskCompleted, onActivity, onQuestGenerated, xp, onAwardXP, levelUpMessage, streak, energyPct, onOpenShop }) {
   const [category, setCategory] = useState('work');
   const [editingStepId, setEditingStepId] = useState(null);
   const [editDraft, setEditDraft] = useState('');
@@ -1931,6 +1972,14 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
         <div className="flex items-center gap-2 mb-2">
           <p className="fc-display text-base font-bold text-slate-900 tracking-wide">{t.consoleName}</p>
           <span className="fc-mono text-[10px] text-emerald-600">· {t.tasksDoneStat(tasksDone)}</span>
+          <button
+            onClick={onOpenShop}
+            className="w-6 h-6 rounded-full bg-violet-50 border border-violet-200 text-violet-600 flex items-center justify-center transition hover:border-violet-300 active:scale-90"
+            aria-label={t.shopTitle}
+            title={t.shopTitle}
+          >
+            <Star size={12} />
+          </button>
         </div>
 
         <div className="w-full max-w-[220px] mb-3">
@@ -1943,6 +1992,16 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
               className="h-full rounded-full transition-all duration-500"
               style={{ width: `${xpInLevel}%`, background: '#639922' }}
             />
+          </div>
+          <div className="flex items-center gap-1.5 mt-2">
+            <Zap size={10} className="text-emerald-500 flex-shrink-0" />
+            <div className="flex-1 h-1 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${energyPct}%`, background: '#6EE7B7' }}
+              />
+            </div>
+            <span className="fc-mono text-[8px] text-slate-400 flex-shrink-0">{t.energyLabel}</span>
           </div>
         </div>
 
@@ -2042,7 +2101,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
           <button
             onClick={handleBreakDown}
             disabled={loading || !input.trim()}
-            className={`mt-1 rounded-xl disabled:cursor-not-allowed font-extrabold px-6 py-4 text-base flex items-center justify-center gap-2 transition active:scale-95 whitespace-nowrap text-white`}
+            className={`mt-1 rounded-xl disabled:cursor-not-allowed font-extrabold px-6 py-4 text-base flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 whitespace-nowrap text-white`}
             style={
               loading || !input.trim()
                 ? { background: '#F0997B' }
@@ -2384,7 +2443,7 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
           </div>
           <button
             onClick={start}
-            className="ml-auto flex-shrink-0 rounded-xl text-white font-bold px-5 py-2.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
+            className="ml-auto flex-shrink-0 rounded-xl text-white font-bold px-5 py-2.5 text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"
             style={{ background: '#639922' }}
           >
             <Play size={14} />
@@ -2477,7 +2536,7 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
             ) : (
               <button
                 onClick={start}
-                className="w-full rounded-xl font-bold px-5 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95 border-2 bg-white"
+                className="w-full rounded-xl font-bold px-5 py-3.5 text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 border-2 bg-white"
                 style={{ borderColor: '#639922', color: '#3B6D11' }}
               >
                 <Play size={15} />
@@ -2856,6 +2915,12 @@ export default function FocusChaos() {
     return { weekDays: days, streak: s };
   }, [history]);
 
+  // Energy/focus gauge: grounded in today's real recorded activity (not a
+  // fake decorative number) — caps at 100% once you've logged 8+ actions today.
+  const todayActivity = history[todayKey()] || 0;
+  const energyPct = Math.min(100, Math.round((todayActivity / 8) * 100));
+  const [shopOpen, setShopOpen] = useState(false);
+
   const [mood, setMood] = useState('neutral');
   const [phraseIndex, setPhraseIndex] = useState(0);
   const lastActivityRef = useRef(Date.now());
@@ -3028,6 +3093,7 @@ export default function FocusChaos() {
       <AmbientGlow />
 
       <TipsModal t={t} open={tipsOpen} onClose={() => setTipsOpen(false)} />
+      <ShopModal t={t} open={shopOpen} onClose={() => setShopOpen(false)} />
       <ReviewsAppsModal t={t} open={moreOpen} onClose={() => setMoreOpen(false)} user={user} />
       <CookieBanner
         t={t}
@@ -3149,6 +3215,8 @@ export default function FocusChaos() {
                 onAwardXP={awardXP}
                 levelUpMessage={levelUpMessage}
                 streak={streak}
+                energyPct={energyPct}
+                onOpenShop={() => setShopOpen(true)}
               />
               <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} onOpenCalendar={() => setCalendarOpen(true)} />
             </div>

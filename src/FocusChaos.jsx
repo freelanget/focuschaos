@@ -128,7 +128,7 @@ const GlobalStyle = () => (
     }
     .fc-card::before { content: none; }
     .fc-glow-mint { }
-    .fc-glow-mint:hover { border-color: #B5D4F4; box-shadow: 0 4px 16px -6px rgba(55,138,221,0.25); }
+    .fc-glow-mint:hover { border-color: #CDBFF0; box-shadow: 0 4px 16px -6px rgba(55,138,221,0.25); }
     .fc-glow-amber { }
     .fc-glow-amber:hover { border-color: #FAC775; box-shadow: 0 4px 16px -6px rgba(239,159,39,0.25); }
 
@@ -1166,9 +1166,9 @@ function ReminderToast({ t, toast, onDismiss }) {
 
 function MiniProgress({ ratio, unlocked }) {
   const pct = Math.round(Math.min(1, Math.max(0, ratio)) * 100);
-  const gradient = unlocked ? 'linear-gradient(90deg,#34D399,#F59E0B)' : 'linear-gradient(90deg,#64748B,#94A3B8)';
+  const gradient = unlocked ? 'linear-gradient(90deg,#34D399,#F59E0B)' : 'linear-gradient(90deg,#CBD3DC,#B4BEC9)';
   return (
-    <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden mt-2">
+    <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mt-2">
       <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: gradient }} />
     </div>
   );
@@ -1283,13 +1283,13 @@ function WeekStrip({ t, selectedDate, setSelectedDate, tasksByDate, onOpenCalend
         className={`flex flex-col items-center gap-1 px-1 sm:px-3 py-2 rounded-xl flex-1 sm:flex-shrink-0 sm:min-w-[52px] min-w-0 transition border ${
           isSelected ? 'border-transparent text-white' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'
         }`}
-        style={isSelected ? { background: '#378ADD' } : {}}
+        style={isSelected ? { background: '#9F7AEA' } : {}}
       >
         <span className="fc-mono text-[9px] tracking-wide opacity-80">{t.weekdaysShort[i % 7]}</span>
         <span className="text-sm font-bold">{d.getDate()}</span>
         <span
           className={`w-1 h-1 rounded-full ${hasTasks ? '' : 'opacity-0'}`}
-          style={{ background: isSelected ? '#FFFFFF' : isToday ? '#D85A30' : '#94a3b8' }}
+          style={{ background: isSelected ? '#FFFFFF' : isToday ? '#F2765C' : '#94a3b8' }}
         />
       </button>
     );
@@ -1533,7 +1533,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
       <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden mb-4 border border-slate-200">
         <div
           className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: '#D85A30' }}
+          style={{ width: `${pct}%`, background: '#F2765C' }}
         />
       </div>
 
@@ -1560,7 +1560,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
                     const isNew = !seenTaskIds.current.has(task.id);
                     seenTaskIds.current.add(task.id);
                     const catStyle = task.category ? CATEGORY_STYLE[task.category] : null;
-                    const accentSolid = catStyle ? catStyle.grad.match(/#[0-9A-Fa-f]{6}/)[0] : '#D85A30';
+                    const accentSolid = catStyle ? catStyle.grad.match(/#[0-9A-Fa-f]{6}/)[0] : '#F2765C';
                     const isEditing = editingTaskId === task.id;
 
                     if (isEditing) {
@@ -1660,7 +1660,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
       </div>
 
       <div className="flex items-center gap-2 mt-5 pt-4 border-t border-slate-100">
-        <HHMMInput value={newTime} onChange={setNewTime} accent="#D85A30" />
+        <HHMMInput value={newTime} onChange={setNewTime} accent="#F2765C" />
         <button
           type="button"
           onClick={() => setHourGridOpen((v) => !v)}
@@ -1682,7 +1682,7 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
           onClick={handleAdd}
           disabled={!newText.trim()}
           className="rounded-lg px-4 py-2.5 text-sm font-bold flex-shrink-0 transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white"
-          style={{ background: '#D85A30' }}
+          style={{ background: '#F2765C' }}
         >
           <Plus size={16} />
         </button>
@@ -1868,7 +1868,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
             mint frame and glow keep working the same way around it. */}
         <div
           className="fc-anim-bob relative w-24 h-24 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-5xl select-none mb-3"
-          style={{ borderColor: '#B5D4F4', background: '#E6F1FB' }}
+          style={{ borderColor: '#CDBFF0', background: '#F1EDFB' }}
           aria-hidden="true"
         >
           🦫
@@ -1894,7 +1894,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
         <div
           key={displayText}
           className="fc-anim-pop relative text-base font-semibold leading-snug text-slate-800 w-full px-5 py-4 min-h-[4rem] flex items-center justify-center rounded-2xl"
-          style={{ background: '#E6F1FB', border: '1px solid #B5D4F4' }}
+          style={{ background: '#F1EDFB', border: '1px solid #CDBFF0' }}
         >
           <span>
             {displayText}
@@ -1991,7 +1991,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
             style={
               loading || !input.trim()
                 ? { background: '#F0997B' }
-                : { background: '#D85A30' }
+                : { background: '#F2765C' }
             }
           >
             {loading ? (
@@ -2303,9 +2303,9 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
         <div className="fc-anim-pop flex items-center gap-3 flex-wrap">
           <div
             className="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0"
-            style={{ borderColor: '#B5D4F4', background: '#E6F1FB' }}
+            style={{ borderColor: '#CDBFF0', background: '#F1EDFB' }}
           >
-            <TimerIcon size={16} className="text-blue-600" />
+            <TimerIcon size={16} className="text-violet-600" />
           </div>
           <div className="flex-shrink-0 mr-1">
             <p className="fc-display text-sm font-bold text-slate-900 leading-tight">{t.timerTitle}</p>
@@ -2443,26 +2443,26 @@ function MedalCard({ icon, name, desc, unlocked, ratio, progressText, lockedLabe
   return (
     <div
       className={`relative rounded-xl p-4 flex flex-col items-center text-center transition ${
-        unlocked ? 'fc-card fc-glow-amber border-amber-400/40' : 'bg-slate-900/70 border border-slate-600/40 fc-invite'
+        unlocked ? 'fc-card fc-glow-amber' : 'bg-slate-50 border border-slate-200'
       } ${justUnlocked ? 'fc-anim-unlock' : ''}`}
+      style={unlocked ? { borderColor: '#FAC775' } : {}}
     >
       <div
         className={`w-11 h-11 rounded-full border-2 flex items-center justify-center mb-2.5 transition-colors duration-300 ${
-          unlocked ? 'border-amber-400 text-amber-300' : 'border-slate-500 text-slate-400'
+          unlocked ? 'border-amber-400 text-amber-600' : 'border-slate-300 text-slate-400'
         } ${unlocked && spin ? 'fc-anim-spin-slow' : ''}`}
-        style={unlocked ? { boxShadow: '0 0 14px -2px rgba(245,158,11,0.7)' } : {}}
       >
         {icon}
       </div>
-      <p className={`text-[13px] font-bold mb-0.5 ${unlocked ? 'text-amber-200' : 'text-slate-200'}`}>{name}</p>
+      <p className={`text-[13px] font-bold mb-0.5 ${unlocked ? 'text-amber-700' : 'text-slate-600'}`}>{name}</p>
       <p className="text-[11px] text-slate-400 mb-1 leading-snug">{desc}</p>
-      <span className={`fc-mono text-[10px] tracking-wide font-bold px-2 py-0.5 rounded-full ${unlocked ? 'bg-amber-500/20 text-amber-200' : 'bg-slate-700/60 text-slate-400'}`}>
+      <span className={`fc-mono text-[10px] tracking-wide font-bold px-2 py-0.5 rounded-full ${unlocked ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-500'}`}>
         {unlocked ? unlockedLabel : lockedLabel}
       </span>
       <span className="fc-mono text-[10px] text-slate-400 mt-1.5">{progressText}</span>
       <MiniProgress ratio={ratio} unlocked={unlocked} />
       {seasonLabel && (
-        <span className="fc-mono text-[9px] tracking-widest text-amber-300/60 mt-2 pt-2 border-t border-amber-400/15 w-full">
+        <span className="fc-mono text-[9px] tracking-widest text-amber-600/70 mt-2 pt-2 border-t border-amber-200 w-full">
           {seasonLabel}
         </span>
       )}
@@ -2475,11 +2475,11 @@ function RewardsVault({ t, tasksDone, sessionsDone, earlyBirdDone }) {
 
   return (
     <div className="fc-card fc-glow-amber rounded-3xl p-6">
-      <div className="flex items-center gap-2 fc-mono text-[10px] tracking-[0.2em] mb-2" style={{ color: '#FCD34D' }}>
+      <div className="flex items-center gap-2 fc-mono text-[10px] tracking-[0.2em] mb-2 text-amber-600">
         <Trophy size={13} />
         <span>VAULT</span>
       </div>
-      <h3 className="fc-display text-lg font-bold text-white mb-1">{t.medalsTitle}</h3>
+      <h3 className="fc-display text-lg font-bold text-slate-900 mb-1">{t.medalsTitle}</h3>
       <p className="text-sm text-slate-400 mb-4">{t.medalsSubtitle}</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -2645,14 +2645,14 @@ function ActivityStrip({ t, days, streak }) {
             <g clipPath="url(#fc-week-cup-clip)">
               <rect x="10" y={fillTopY} width="28" height="26" fill="url(#fc-week-tea)" />
             </g>
-            <path d={CUP_PATH} fill="none" stroke="#5EEAD4" strokeWidth="1.1" strokeLinejoin="round" />
-            <line x1="15" y1="41" x2="33" y2="41" stroke="#5EEAD4" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
+            <path d={CUP_PATH} fill="none" stroke="#0F766E" strokeWidth="1.1" strokeLinejoin="round" />
+            <line x1="15" y1="41" x2="33" y2="41" stroke="#0F766E" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
             {showLeaves && (
               <>
                 <path d="M17 15 Q19 11 17 7" stroke="#94A3B8" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.65" />
                 <path d="M31 15 Q33 11 31 7" stroke="#94A3B8" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.65" />
-                <ellipse cx="16" cy="22" rx="2" ry="1.1" fill="#6EE7B7" transform="rotate(20 16 22)" />
-                <ellipse cx="32" cy="20" rx="2" ry="1.1" fill="#6EE7B7" transform="rotate(-15 32 20)" />
+                <ellipse cx="16" cy="22" rx="2" ry="1.1" fill="#34D399" transform="rotate(20 16 22)" />
+                <ellipse cx="32" cy="20" rx="2" ry="1.1" fill="#34D399" transform="rotate(-15 32 20)" />
               </>
             )}
           </g>
@@ -2660,8 +2660,8 @@ function ActivityStrip({ t, days, streak }) {
       </div>
 
       <div className="flex-1 min-w-[200px]">
-        <p className="text-sm font-semibold text-white leading-tight mb-0.5">{t.streakTitle}</p>
-        <p className="fc-mono text-[10px] text-emerald-300/80 mb-2">{t.streakLabel(streak)}</p>
+        <p className="text-sm font-semibold text-slate-900 leading-tight mb-0.5">{t.streakTitle}</p>
+        <p className="fc-mono text-[10px] text-emerald-600 mb-2">{t.streakLabel(streak)}</p>
         <div className="flex items-center gap-1.5">
           {days.map((d) => (
             <span
@@ -2669,15 +2669,14 @@ function ActivityStrip({ t, days, streak }) {
               title={t.streakDays[d.weekdayIndex]}
               className="w-2.5 h-2.5 rounded-full flex-shrink-0"
               style={{
-                background: d.count > 0 ? (d.isToday ? '#34D399' : '#0F766E') : 'rgba(148,163,184,0.25)',
-                boxShadow: d.count > 0 && d.isToday ? '0 0 6px -1px rgba(52,211,153,0.8)' : 'none',
+                background: d.count > 0 ? (d.isToday ? '#34D399' : '#0F766E') : '#E2E5E9',
               }}
             />
           ))}
         </div>
       </div>
 
-      <span className="fc-mono text-[9px] tracking-wide text-slate-500 bg-slate-800/60 px-2.5 py-1 rounded-full flex-shrink-0">{t.streakDeviceNote}</span>
+      <span className="fc-mono text-[9px] tracking-wide text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full flex-shrink-0">{t.streakDeviceNote}</span>
     </div>
   );
 }
@@ -2971,7 +2970,7 @@ export default function FocusChaos() {
   }
 
   return (
-    <div className="fc-root min-h-screen text-slate-800 px-4 py-6 sm:px-6 relative overflow-hidden" style={{ background: '#F7F8FA' }}>
+    <div className="fc-root min-h-screen text-slate-800 px-4 py-6 sm:px-6 relative overflow-hidden" style={{ background: '#FAF7F1' }}>
       <GlobalStyle />
       <AmbientGlow />
 
@@ -3002,7 +3001,7 @@ export default function FocusChaos() {
                     pointing at your own logo file whenever you have one ready. */}
                 <div
                   className="w-11 h-11 rounded-xl border flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#E6F1FB', borderColor: '#B5D4F4', color: '#185FA5' }}
+                  style={{ background: '#F1EDFB', borderColor: '#CDBFF0', color: '#534AB7' }}
                 >
                   <Zap size={20} strokeWidth={2} />
                 </div>
@@ -3055,7 +3054,7 @@ export default function FocusChaos() {
             className={`flex-1 rounded-xl px-4 py-3 text-sm font-bold transition border ${
               tab === 'focus' ? 'text-white border-transparent' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
             }`}
-            style={tab === 'focus' ? { background: '#378ADD' } : {}}
+            style={tab === 'focus' ? { background: '#9F7AEA' } : {}}
           >
             {t.tabFocus}
           </button>
@@ -3064,7 +3063,7 @@ export default function FocusChaos() {
             className={`flex-1 rounded-xl px-4 py-3 text-sm font-bold transition border ${
               tab === 'rewards' ? 'text-white border-transparent' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
             }`}
-            style={tab === 'rewards' ? { background: '#D85A30' } : {}}
+            style={tab === 'rewards' ? { background: '#F2765C' } : {}}
           >
             {t.tabRewards}
           </button>

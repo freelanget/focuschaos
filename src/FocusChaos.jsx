@@ -1497,7 +1497,9 @@ function HHMMInput({ value, onChange, accent = '#F59E0B', className = '' }) {
   );
 }
 
-function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, onEditTask, onDeleteTask }) {
+const GRID_HOURS = Array.from({ length: 18 }).map((_, i) => i + 6); // 06:00–23:00, compact but covers a normal day
+
+function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTask, onAddTask, onEditTask, onDeleteTask }) {
   const [newTime, setNewTime] = useState(() => {
     const now = new Date();
     const rounded = Math.round(now.getMinutes() / 5) * 5;
@@ -1508,10 +1510,10 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
   const [newText, setNewText] = useState('');
   const [hourGridOpen, setHourGridOpen] = useState(false);
   const [justCompletedTaskId, setJustCompletedTaskId] = useState(null);
-  const [editingTaskId, setEditingTaskId] = useState(null);
-  const [editDraft, setEditDraft] = useState('');
-  const [editTimeDraft, setEditTimeDraft] = useState('');
   const seenTaskIds = useRef(new Set());
+
+  const weekDates = getWeekDates(selectedDate);
+  const today = todayKey();
 
   const tasks = (tasksByDate[selectedDate] || []).slice().sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
   const doneCount = tasks.filter((x) => x.done).length;
@@ -1524,139 +1526,98 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
     setNewText('');
   };
 
+  const handleToggle = (dateKey, task) => {
+    if (!task.done) {
+      setJustCompletedTaskId(task.id);
+      setTimeout(() => setJustCompletedTaskId((cur) => (cur === task.id ? null : cur)), 900);
+    }
+    onToggleTask(dateKey, task.id);
+  };
+
   return (
-    <div className="fc-card fc-glow-amber rounded-3xl p-5 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-1">
+    <div className="fc-card fc-glow-amber rounded-3xl p-5">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="fc-display text-lg font-bold text-slate-900">{t.timelineTitle}</h3>
         <span className="fc-mono text-[10px] text-slate-500">{pct}%</span>
       </div>
-      <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden mb-4 border border-slate-200">
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: '#F2765C' }}
-        />
-      </div>
 
-      <div className="space-y-2 mb-4 fc-scrollbar overflow-y-auto" style={{ maxHeight: 420 }}>
-        {SLOT_HOURS.map((h) => {
-          const slotTasks = tasks.filter((task) => slotForMinutes(timeToMinutes(task.time)) === h);
-          const hasTasks = slotTasks.length > 0;
-          return (
-            <div
-              key={h}
-              className="rounded-xl border px-4 py-3 transition"
-              style={{
-                background: hasTasks ? '#FAFBFC' : '#FCFCFD',
-                borderColor: hasTasks ? '#E7E9ED' : '#EFF1F4',
-              }}
-            >
-              <span className="fc-mono text-[11px] font-bold tracking-widest text-slate-400">{String(h).padStart(2, '0')}:00</span>
+      {/* Week grid — day columns across the top, hours down the left, tasks as colored chips */}
+      <div className="fc-scrollbar overflow-x-auto">
+        <div className="min-w-[640px]">
+          <div className="grid" style={{ gridTemplateColumns: '48px repeat(7, minmax(0, 1fr))' }}>
+            <div />
+            {weekDates.map((d) => {
+              const key = dateKeyOf(d);
+              const isSelected = key === selectedDate;
+              const isToday = key === today;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setSelectedDate(key)}
+                  className={`flex flex-col items-center py-1.5 rounded-lg mx-0.5 transition ${
+                    isSelected ? 'bg-slate-50' : 'hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="fc-mono text-[9px] text-slate-400 uppercase">{t.weekdaysShort[(d.getDay() + 6) % 7]}</span>
+                  <span
+                    className={`text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center mt-0.5 ${
+                      isSelected ? 'text-white' : isToday ? 'text-amber-600' : 'text-slate-600'
+                    }`}
+                    style={isSelected ? { background: '#F2765C' } : {}}
+                  >
+                    {d.getDate()}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-              {!hasTasks && <p className="text-[13px] text-slate-400 italic mt-1.5">{t.slotFreeText}</p>}
-
-              {hasTasks && (
-                <div className="mt-2 space-y-2">
-                  {slotTasks.map((task) => {
-                    const isNew = !seenTaskIds.current.has(task.id);
-                    seenTaskIds.current.add(task.id);
-                    const catStyle = task.category ? CATEGORY_STYLE[task.category] : null;
-                    const accentSolid = catStyle ? catStyle.grad.match(/#[0-9A-Fa-f]{6}/)[0] : '#F2765C';
-                    const isEditing = editingTaskId === task.id;
-
-                    if (isEditing) {
-                      const saveEdit = () => {
-                        const trimmed = editDraft.trim();
-                        if (trimmed) onEditTask(selectedDate, task.id, trimmed, editTimeDraft);
-                        setEditingTaskId(null);
-                      };
-                      return (
-                        <div key={task.id} className="flex items-center gap-2 rounded-xl px-3 py-2 border border-slate-300 bg-white">
-                          <HHMMInput value={editTimeDraft} onChange={setEditTimeDraft} className="py-1" />
-                          <input
-                            autoFocus
-                            value={editDraft}
-                            onChange={(e) => setEditDraft(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') saveEdit();
-                              if (e.key === 'Escape') setEditingTaskId(null);
-                            }}
-                            className="flex-1 bg-transparent text-sm text-slate-800 outline-none"
-                          />
-                          <button onClick={saveEdit} className="text-emerald-600 hover:text-emerald-500 flex-shrink-0 p-1" aria-label={t.saveEdit}>
-                            <Check size={16} />
-                          </button>
-                          <button onClick={() => setEditingTaskId(null)} className="text-slate-400 hover:text-slate-600 flex-shrink-0 p-1" aria-label={t.cancelEdit}>
-                            <X size={16} />
-                          </button>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div key={task.id} className="group relative">
-                        <button
-                          onClick={() => {
-                            if (!task.done) {
-                              setJustCompletedTaskId(task.id);
-                              setTimeout(() => setJustCompletedTaskId((cur) => (cur === task.id ? null : cur)), 900);
-                            }
-                            onToggleTask(selectedDate, task.id);
-                          }}
-                          className={`w-full flex items-center gap-2.5 rounded-lg pl-3 pr-16 py-2.5 text-left text-sm transition border-l-4 ${isNew ? 'fc-magnet-in' : ''} ${
-                            task.done ? 'text-slate-400' : 'text-slate-700'
-                          }`}
-                          style={{ background: `${accentSolid}14`, borderLeftColor: accentSolid, borderRadius: '0 8px 8px 0' }}
-                        >
-                          <span className="relative flex-shrink-0">
-                            <span
-                              className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center ${justCompletedTaskId === task.id ? 'fc-triumph-flash' : ''}`}
-                              style={{ background: task.done ? accentSolid : 'transparent', borderColor: accentSolid }}
+          <div className="fc-scrollbar overflow-y-auto" style={{ maxHeight: 440 }}>
+            {GRID_HOURS.map((h) => (
+              <div key={h} className="grid border-t border-slate-100" style={{ gridTemplateColumns: '48px repeat(7, minmax(0, 1fr))', minHeight: 40 }}>
+                <div className="fc-mono text-[9px] text-slate-300 pt-1 pr-2 text-right">{String(h).padStart(2, '0')}:00</div>
+                {weekDates.map((d) => {
+                  const key = dateKeyOf(d);
+                  const dayTasks = (tasksByDate[key] || []).filter((task) => slotForMinutes(timeToMinutes(task.time)) === h);
+                  return (
+                    <div key={key} className="px-0.5 py-0.5 space-y-0.5 border-l border-slate-50">
+                      {dayTasks.map((task) => {
+                        const isNew = !seenTaskIds.current.has(task.id);
+                        seenTaskIds.current.add(task.id);
+                        const catStyle = task.category ? CATEGORY_STYLE[task.category] : null;
+                        const accentSolid = catStyle ? catStyle.grad.match(/#[0-9A-Fa-f]{6}/)[0] : '#F2765C';
+                        return (
+                          <div key={task.id} className="group relative">
+                            <button
+                              onClick={() => handleToggle(key, task)}
+                              className={`w-full text-left rounded px-1.5 py-1 text-[10px] leading-tight transition ${isNew ? 'fc-magnet-in' : ''} ${
+                                task.done ? 'line-through text-slate-400' : 'text-slate-700'
+                              } ${justCompletedTaskId === task.id ? 'fc-triumph-flash' : ''}`}
+                              style={{ background: `${accentSolid}1c`, borderLeft: `3px solid ${accentSolid}` }}
+                              title={task.text}
                             >
-                              {task.done && <Check size={11} className="text-white" strokeWidth={3.5} />}
-                            </span>
-                            {justCompletedTaskId === task.id && (
-                              <span className="fc-float-xp absolute left-1/2 -top-1 fc-mono text-[10px] font-bold whitespace-nowrap pointer-events-none" style={{ color: accentSolid }}>
-                                {t.xpPopup}
-                              </span>
-                            )}
-                          </span>
-                          <span className="fc-mono text-[10px] flex-shrink-0" style={{ color: accentSolid }}>{task.time}</span>
-                          <span className={`truncate ${task.done ? 'line-through' : ''}`} style={task.done ? { textDecorationColor: accentSolid } : {}}>{task.text}</span>
-                        </button>
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditDraft(task.text);
-                              setEditTimeDraft(task.time);
-                              setEditingTaskId(task.id);
-                            }}
-                            className="text-slate-400 hover:text-slate-600 p-1.5"
-                            aria-label={t.editStep}
-                            title={t.editStep}
-                          >
-                            <Pencil size={13} />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDeleteTask(selectedDate, task.id);
-                            }}
-                            className="text-slate-400 hover:text-rose-500 p-1.5"
-                            aria-label={t.deleteQuest}
-                            title={t.deleteQuest}
-                          >
-                            <X size={13} />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                              {task.text}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteTask(key, task.id);
+                              }}
+                              className="hidden group-hover:flex absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-rose-500 items-center justify-center"
+                              aria-label={t.deleteQuest}
+                            >
+                              <X size={9} />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 mt-5 pt-4 border-t border-slate-100">
@@ -3072,8 +3033,10 @@ export default function FocusChaos() {
             <div className="mb-4">
               <WeekStrip t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onOpenCalendar={() => setCalendarOpen(true)} />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-              <DayTimeline t={t} selectedDate={selectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} />
+            <div className="mb-4">
+              <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} />
+            </div>
+            <div className="mb-4">
               <GrishaHero
                 t={t}
                 lang={lang}

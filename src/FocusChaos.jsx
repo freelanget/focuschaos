@@ -3,7 +3,7 @@ import {
   Timer as TimerIcon, Trophy, Lock, Zap, Play, Pause, Globe2, Check, Plus,
   Star, Flame, Cpu, Sunrise, Award, X, Briefcase, Dumbbell, Home,
   Lightbulb, HelpCircle, ChevronLeft, ChevronRight, Bell, CalendarDays,
-  Users, FolderKanban, Wallet, Pencil, Smartphone, MessageSquareQuote,
+  Users, FolderKanban, Wallet, Pencil, Smartphone, MessageSquareQuote, ChevronUp, ChevronDown,
 } from 'lucide-react';
 import { supabase } from './lib/supabaseClient';
 import AuthPanel from './components/AuthPanel';
@@ -422,6 +422,8 @@ const T = {
     shopComingSoon: 'Скоро здесь можно будет тратить накопленный опыт на обновления для Гриши. Пока копите XP!',
     energyLabel: 'Энергия',
     dayClearedLabel: 'День пройден на 100%!',
+    moveUp: 'Переместить выше',
+    moveDown: 'Переместить ниже',
     levelUpPhrase: (lvl) => `Уровень ${lvl}! Растёшь быстрее, чем я ожидал.`,
     levelLabel: (lvl) => `Ур. ${lvl}`,
     xpLabel: (cur, max) => `${cur}/${max} XP`,
@@ -650,6 +652,8 @@ const T = {
     shopComingSoon: "Soon you'll be able to spend your saved-up XP on upgrades for Grisha. Keep stacking XP for now!",
     energyLabel: 'Energy',
     dayClearedLabel: 'Day fully cleared!',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
     levelUpPhrase: (lvl) => `Level ${lvl}! You're leveling up faster than I expected.`,
     levelLabel: (lvl) => `Lv. ${lvl}`,
     xpLabel: (cur, max) => `${cur}/${max} XP`,
@@ -1823,7 +1827,95 @@ function QuickNotes({ t, notes, setNotes }) {
   );
 }
 
-function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQuests, onTaskCompleted, onActivity, onQuestGenerated, xp, onAwardXP, levelUpMessage, streak, energyPct, onOpenShop }) {
+/* ---------------------------------------------------------------------- */
+/*  GRISHA WIDGET — compact sidebar companion                             */
+/*  Just the character: avatar, level, XP, energy, speech bubble, shop.    */
+/*  No longer shares screen real-estate with tasks — see GoalPlanner       */
+/*  below for the actual goal/quest work, which now lives center-stage.   */
+/* ---------------------------------------------------------------------- */
+function GrishaWidget({ t, mood, phraseText, tasksDone, xp, levelUpMessage, streak, energyPct, onOpenShop }) {
+  const dotColor = mood === 'happy' || mood === 'idle' ? '#F59E0B' : '#2DD4BF';
+  const statusText = mood === 'happy' ? t.statusSuccess : mood === 'idle' ? t.statusIdle : t.statusOnline;
+  const displayText = levelUpMessage || phraseText;
+  const grishaLevel = Math.floor(xp / 100) + 1;
+  const xpInLevel = xp % 100;
+
+  return (
+    <div className="fc-card fc-glow-mint rounded-3xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="fc-mono text-[9px] tracking-[0.15em] text-slate-400">{t.consoleLabel}</span>
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full fc-pulse-dot" style={{ backgroundColor: dotColor }} />
+          <span className="fc-mono text-[9px] tracking-[0.1em] font-semibold" style={{ color: dotColor }}>{statusText}</span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 mb-3">
+        <div
+          className="fc-anim-bob relative w-12 h-12 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-2xl select-none"
+          style={{ borderColor: '#CDBFF0', background: '#F1EDFB' }}
+          aria-hidden="true"
+        >
+          🦫
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <p className="fc-display text-sm font-bold text-slate-900 truncate">{t.consoleName}</p>
+            <button
+              onClick={onOpenShop}
+              className="w-5 h-5 rounded-full bg-violet-50 border border-violet-200 text-violet-600 flex items-center justify-center transition hover:border-violet-300 active:scale-90 flex-shrink-0"
+              aria-label={t.shopTitle}
+              title={t.shopTitle}
+            >
+              <Star size={10} />
+            </button>
+          </div>
+          <p className="fc-mono text-[9px] text-emerald-600 truncate">{t.tasksDoneStat(tasksDone)}</p>
+        </div>
+        {streak > 0 && (
+          <span className="fc-mono text-[10px] font-bold flex-shrink-0" style={{ color: '#993C1D' }} title={t.streakBadge(streak)}>
+            {t.streakBadge(streak)}
+          </span>
+        )}
+      </div>
+
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-1">
+          <span className="fc-mono text-[9px] font-bold text-emerald-600">{t.levelLabel(grishaLevel)}</span>
+          <span className="fc-mono text-[9px] text-slate-400">{t.xpLabel(xpInLevel, 100)}</span>
+        </div>
+        <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
+          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${xpInLevel}%`, background: '#639922' }} />
+        </div>
+        <div className="flex items-center gap-1.5 mt-2">
+          <Zap size={10} className="text-emerald-500 flex-shrink-0" />
+          <div className="flex-1 h-1 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
+            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${energyPct}%`, background: '#6EE7B7' }} />
+          </div>
+          <span className="fc-mono text-[8px] text-slate-400 flex-shrink-0">{t.energyLabel}</span>
+        </div>
+      </div>
+
+      <div
+        key={displayText}
+        className="fc-anim-pop relative text-[13px] leading-snug text-slate-800 w-full px-3.5 py-3 min-h-[3.2rem] flex items-center justify-center text-center rounded-xl"
+        style={{ background: '#F1EDFB', border: '1px solid #CDBFF0' }}
+      >
+        <span>
+          {displayText}
+          <span className="inline-block w-1 h-3.5 ml-1 align-middle fc-cursor" style={{ backgroundColor: dotColor }} />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------------- */
+/*  GOAL PLANNER — the real work: category, AI breakdown, quest/step list */
+/*  Lives center-stage now, next to the day schedule, not squeezed        */
+/*  alongside Grisha's character card.                                     */
+/* ---------------------------------------------------------------------- */
+function GoalPlanner({ t, lang, mode, quests, setQuests, onTaskCompleted, onActivity, onQuestGenerated, onAwardXP }) {
   const [category, setCategory] = useState('work');
   const [editingStepId, setEditingStepId] = useState(null);
   const [editDraft, setEditDraft] = useState('');
@@ -1858,11 +1950,6 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
   };
 
   const catMeta = t.categories[category];
-  const dotColor = mood === 'happy' || mood === 'idle' ? '#F59E0B' : '#2DD4BF';
-  const statusText = mood === 'happy' ? t.statusSuccess : mood === 'idle' ? t.statusIdle : t.statusOnline;
-  const displayText = quip || levelUpMessage || phraseText;
-  const grishaLevel = Math.floor(xp / 100) + 1;
-  const xpInLevel = xp % 100;
 
   useEffect(() => () => {
     if (quipTimeoutRef.current) clearTimeout(quipTimeoutRef.current);
@@ -1930,94 +2017,30 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
     );
   };
 
+  // Reorder a step within its quest — the "drag and drop, but simpler and
+  // fully keyboard/tap accessible" version: swap with the neighbor above/below.
+  const moveStep = (questId, stepId, direction) => {
+    onActivity();
+    setQuests((prev) =>
+      prev.map((q) => {
+        if (q.id !== questId) return q;
+        const idx = q.steps.findIndex((s) => s.id === stepId);
+        const targetIdx = idx + direction;
+        if (idx === -1 || targetIdx < 0 || targetIdx >= q.steps.length) return q;
+        const nextSteps = q.steps.slice();
+        [nextSteps[idx], nextSteps[targetIdx]] = [nextSteps[targetIdx], nextSteps[idx]];
+        return { ...q, steps: nextSteps };
+      })
+    );
+  };
+
   const removeQuest = (questId) => {
     onActivity();
     setQuests((prev) => prev.filter((q) => q.id !== questId));
   };
 
   return (
-    <div className="fc-card fc-glow-mint rounded-3xl p-6 relative overflow-hidden h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
-        <span className="fc-mono text-[10px] tracking-[0.2em] text-slate-400">{t.consoleLabel}</span>
-        <div className="flex items-center gap-3">
-          {streak > 0 && (
-            <div
-              className="flex items-center rounded-full bg-orange-50 border px-2.5 py-1"
-              style={{ borderColor: '#F2765C' }}
-            >
-              <span className="fc-mono text-[11px] font-bold" style={{ color: '#993C1D' }}>{t.streakBadge(streak)}</span>
-            </div>
-          )}
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full fc-pulse-dot" style={{ backgroundColor: dotColor }} />
-            <span className="fc-mono text-[10px] tracking-[0.15em] font-semibold" style={{ color: dotColor }}>
-              {statusText}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Grisha — the hero of this card */}
-      <div className="flex flex-col items-center text-center mb-5">
-        {/* LOGO SLOT — Grisha's avatar. Plain emoji placeholder on purpose:
-            swap for an <img> tag once you have your own character art. The
-            mint frame and glow keep working the same way around it. */}
-        <div
-          className="fc-anim-bob relative w-24 h-24 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-5xl select-none mb-3"
-          style={{ borderColor: '#CDBFF0', background: '#F1EDFB' }}
-          aria-hidden="true"
-        >
-          🦫
-        </div>
-        <div className="flex items-center gap-2 mb-2">
-          <p className="fc-display text-base font-bold text-slate-900 tracking-wide">{t.consoleName}</p>
-          <span className="fc-mono text-[10px] text-emerald-600">· {t.tasksDoneStat(tasksDone)}</span>
-          <button
-            onClick={onOpenShop}
-            className="w-6 h-6 rounded-full bg-violet-50 border border-violet-200 text-violet-600 flex items-center justify-center transition hover:border-violet-300 active:scale-90"
-            aria-label={t.shopTitle}
-            title={t.shopTitle}
-          >
-            <Star size={12} />
-          </button>
-        </div>
-
-        <div className="w-full max-w-[220px] mb-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="fc-mono text-[9px] font-bold text-emerald-600">{t.levelLabel(grishaLevel)}</span>
-            <span className="fc-mono text-[9px] text-slate-400">{t.xpLabel(xpInLevel, 100)}</span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${xpInLevel}%`, background: '#639922' }}
-            />
-          </div>
-          <div className="flex items-center gap-1.5 mt-2">
-            <Zap size={10} className="text-emerald-500 flex-shrink-0" />
-            <div className="flex-1 h-1 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${energyPct}%`, background: '#6EE7B7' }}
-              />
-            </div>
-            <span className="fc-mono text-[8px] text-slate-400 flex-shrink-0">{t.energyLabel}</span>
-          </div>
-        </div>
-
-        <div
-          key={displayText}
-          className="fc-anim-pop relative text-base font-semibold leading-snug text-slate-800 w-full px-5 py-4 min-h-[4rem] flex items-center justify-center rounded-2xl"
-          style={{ background: '#F1EDFB', border: '1px solid #CDBFF0' }}
-        >
-          <span>
-            {displayText}
-            <span className="inline-block w-1.5 h-4 ml-1 align-middle fc-cursor" style={{ backgroundColor: dotColor }} />
-          </span>
-        </div>
-      </div>
-
-      {/* category quick-replies, styled like chat chips replying to Grisha */}
+    <div className="fc-card fc-glow-mint rounded-3xl p-6 relative overflow-hidden">
       <div>
         <p className="fc-mono text-[10px] tracking-widest text-slate-400 mb-1.5">{t.categoriesLabel}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
@@ -2043,6 +2066,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
           })}
         </div>
 
+        {quip && <p className="text-xs text-violet-600 italic mb-2">{quip}</p>}
         <p className="text-base font-bold text-slate-900 mb-2.5 mt-5 pt-4 border-t border-slate-100">{t.heroGreeting}</p>
         <div className="flex flex-col gap-2.5 mb-1">
           <div className="relative">
@@ -2209,7 +2233,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                       <li key={s.id} className="group relative">
                         <button
                           onClick={() => toggleStep(q.id, s.id)}
-                          className={`w-full flex items-center gap-3 rounded-xl px-4 py-3.5 pr-11 text-left text-sm transition active:scale-[0.99] border ${
+                          className={`w-full flex items-center gap-3 rounded-xl px-4 py-3.5 pr-20 text-left text-sm transition active:scale-[0.99] border ${
                             s.done
                               ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                               : isNext
@@ -2236,18 +2260,46 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                           </span>
                           <span className={s.done ? 'line-through decoration-emerald-400' : isNext ? 'font-medium' : ''}>{s.text}</span>
                         </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditDraft(s.text);
-                            setEditingStepId(s.id);
-                          }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1.5 opacity-0 group-hover:opacity-100 transition"
-                          aria-label={t.editStep}
-                          title={t.editStep}
-                        >
-                          <Pencil size={14} />
-                        </button>
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center opacity-0 group-hover:opacity-100 transition">
+                          <div className="flex flex-col">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveStep(q.id, s.id, -1);
+                              }}
+                              disabled={i === 0}
+                              className="text-slate-400 hover:text-slate-600 disabled:opacity-20 p-0.5"
+                              aria-label={t.moveUp}
+                              title={t.moveUp}
+                            >
+                              <ChevronUp size={13} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveStep(q.id, s.id, 1);
+                              }}
+                              disabled={i === q.steps.length - 1}
+                              className="text-slate-400 hover:text-slate-600 disabled:opacity-20 p-0.5"
+                              aria-label={t.moveDown}
+                              title={t.moveDown}
+                            >
+                              <ChevronDown size={13} />
+                            </button>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditDraft(s.text);
+                              setEditingStepId(s.id);
+                            }}
+                            className="text-slate-400 hover:text-slate-600 p-1.5"
+                            aria-label={t.editStep}
+                            title={t.editStep}
+                          >
+                            <Pencil size={14} />
+                          </button>
+                        </div>
                       </li>
                     );
                   })}
@@ -3190,33 +3242,36 @@ export default function FocusChaos() {
 
         {tab === 'focus' ? (
           <div className="fc-fade-up grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 items-start" style={{ animationDelay: '100ms' }}>
-            {/* Sidebar — always visible: month calendar, focus timer, notes */}
+            {/* Sidebar — always visible: Grisha (compact companion), month calendar, focus timer, notes */}
             <div className="flex flex-col gap-4 order-2 lg:order-1">
+              <GrishaWidget
+                t={t}
+                mood={mood}
+                phraseText={phraseText}
+                tasksDone={tasksDone}
+                xp={xp}
+                levelUpMessage={levelUpMessage}
+                streak={streak}
+                energyPct={energyPct}
+                onOpenShop={() => setShopOpen(true)}
+              />
               <MiniCalendar t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} />
               <FocusTimer t={t} onSessionComplete={handleSessionCompleted} onActivity={registerActivity} />
               <QuickNotes t={t} notes={notes} setNotes={setNotes} />
             </div>
 
-            {/* Main area — Grisha on top, week schedule below */}
+            {/* Main area — center screen belongs to the actual work: goal planning + day schedule */}
             <div className="flex flex-col gap-4 order-1 lg:order-2 min-w-0">
-              <GrishaHero
+              <GoalPlanner
                 t={t}
                 lang={lang}
-                mood={mood}
-                phraseText={phraseText}
-                tasksDone={tasksDone}
                 mode={mode}
                 quests={quests}
                 setQuests={setQuests}
                 onTaskCompleted={handleTaskCompleted}
                 onActivity={registerActivity}
                 onQuestGenerated={handleQuestGenerated}
-                xp={xp}
                 onAwardXP={awardXP}
-                levelUpMessage={levelUpMessage}
-                streak={streak}
-                energyPct={energyPct}
-                onOpenShop={() => setShopOpen(true)}
               />
               <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} onOpenCalendar={() => setCalendarOpen(true)} />
             </div>

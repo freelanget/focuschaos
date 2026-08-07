@@ -1499,7 +1499,7 @@ function HHMMInput({ value, onChange, accent = '#F59E0B', className = '' }) {
 
 const GRID_HOURS = Array.from({ length: 18 }).map((_, i) => i + 6); // 06:00–23:00, compact but covers a normal day
 
-function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTask, onAddTask, onEditTask, onDeleteTask }) {
+function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTask, onAddTask, onEditTask, onDeleteTask, onOpenCalendar }) {
   const [newTime, setNewTime] = useState(() => {
     const now = new Date();
     const rounded = Math.round(now.getMinutes() / 5) * 5;
@@ -1513,6 +1513,11 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
   const seenTaskIds = useRef(new Set());
 
   const weekDates = getWeekDates(selectedDate);
+  const shiftWeek = (days) => {
+    const d = new Date(selectedDate + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    setSelectedDate(dateKeyOf(d));
+  };
   const today = todayKey();
 
   const tasks = (tasksByDate[selectedDate] || []).slice().sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
@@ -1536,9 +1541,35 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
 
   return (
     <div className="fc-card fc-glow-amber rounded-3xl p-5">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-y-2">
         <h3 className="fc-display text-lg font-bold text-slate-900">{t.timelineTitle}</h3>
-        <span className="fc-mono text-[10px] text-slate-500">{pct}%</span>
+        <div className="flex items-center gap-1.5">
+          <span className="fc-mono text-[10px] text-slate-400 mr-1">{pct}%</span>
+          <button
+            onClick={() => shiftWeek(-7)}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition"
+            aria-label={t.prevWeeks}
+            title={t.prevWeeks}
+          >
+            <ChevronLeft size={15} />
+          </button>
+          <button
+            onClick={() => shiftWeek(7)}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition"
+            aria-label={t.nextWeeks}
+            title={t.nextWeeks}
+          >
+            <ChevronRight size={15} />
+          </button>
+          <button
+            onClick={onOpenCalendar}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition"
+            aria-label={t.openCalendar}
+            title={t.openCalendar}
+          >
+            <CalendarDays size={15} />
+          </button>
+        </div>
       </div>
 
       {/* Week grid — day columns across the top, hours down the left, tasks as colored chips */}
@@ -3031,10 +3062,7 @@ export default function FocusChaos() {
         {tab === 'focus' ? (
           <div className="fc-fade-up" style={{ animationDelay: '100ms' }}>
             <div className="mb-4">
-              <WeekStrip t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onOpenCalendar={() => setCalendarOpen(true)} />
-            </div>
-            <div className="mb-4">
-              <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} />
+              <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} onOpenCalendar={() => setCalendarOpen(true)} />
             </div>
             <div className="mb-4">
               <GrishaHero

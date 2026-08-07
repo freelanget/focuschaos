@@ -1714,14 +1714,14 @@ function DayTimeline({ t, selectedDate, tasksByDate, onToggleTask, onAddTask, on
 /* ---------------------------------------------------------------------- */
 function QuickNotes({ t, notes, setNotes }) {
   return (
-    <div className="fc-card rounded-3xl p-6 border-slate-700/50 h-full flex flex-col">
-      <h3 className="fc-display text-lg font-bold text-white mb-1">{t.notesTitle}</h3>
+    <div className="fc-card rounded-3xl p-6 h-full flex flex-col">
+      <h3 className="fc-display text-lg font-bold text-slate-900 mb-1">{t.notesTitle}</h3>
       <p className="text-sm text-slate-400 mb-4">{t.notesSubtitle}</p>
       <textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         placeholder={t.notesPlaceholder}
-        className="w-full flex-1 rounded-xl bg-slate-950/80 border border-slate-700 px-4 py-3 text-slate-100 placeholder-slate-600 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 transition resize-none fc-scrollbar"
+        className="w-full flex-1 rounded-xl bg-white border border-slate-200 px-4 py-3 text-slate-800 placeholder-slate-400 text-sm outline-none focus:ring-2 focus:ring-emerald-400/30 transition resize-none fc-scrollbar"
       />
     </div>
   );
@@ -1846,10 +1846,10 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
         <div className="flex items-center gap-3">
           {streak > 0 && (
             <div
-              className="flex items-center rounded-full bg-slate-800/40 border-2 px-2.5 py-1"
-              style={{ borderColor: '#FB923C', boxShadow: '0 0 14px -3px rgba(251,146,60,0.9)' }}
+              className="flex items-center rounded-full bg-orange-50 border px-2.5 py-1"
+              style={{ borderColor: '#F2765C' }}
             >
-              <span className="fc-mono text-[11px] font-bold text-orange-300">{t.streakBadge(streak)}</span>
+              <span className="fc-mono text-[11px] font-bold" style={{ color: '#993C1D' }}>{t.streakBadge(streak)}</span>
             </div>
           )}
           <div className="flex items-center gap-1.5">
@@ -1867,41 +1867,34 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
             swap for an <img> tag once you have your own character art. The
             mint frame and glow keep working the same way around it. */}
         <div
-          className="fc-core-pulse fc-anim-bob relative w-24 h-24 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-5xl select-none mb-3"
-          style={{ borderColor: 'rgba(45,212,191,0.7)', background: 'radial-gradient(circle,rgba(45,212,191,0.28),transparent 70%)' }}
+          className="fc-anim-bob relative w-24 h-24 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-5xl select-none mb-3"
+          style={{ borderColor: '#B5D4F4', background: '#E6F1FB' }}
           aria-hidden="true"
         >
           🦫
         </div>
         <div className="flex items-center gap-2 mb-2">
-          <p className="fc-display text-base font-bold text-white tracking-wide">{t.consoleName}</p>
-          <span className="fc-mono text-[10px] text-emerald-300/80">· {t.tasksDoneStat(tasksDone)}</span>
+          <p className="fc-display text-base font-bold text-slate-900 tracking-wide">{t.consoleName}</p>
+          <span className="fc-mono text-[10px] text-emerald-600">· {t.tasksDoneStat(tasksDone)}</span>
         </div>
 
         <div className="w-full max-w-[220px] mb-3">
           <div className="flex items-center justify-between mb-1">
-            <span className="fc-mono text-[9px] font-bold text-emerald-300">{t.levelLabel(grishaLevel)}</span>
-            <span className="fc-mono text-[9px] text-slate-500">{t.xpLabel(xpInLevel, 100)}</span>
+            <span className="fc-mono text-[9px] font-bold text-emerald-600">{t.levelLabel(grishaLevel)}</span>
+            <span className="fc-mono text-[9px] text-slate-400">{t.xpLabel(xpInLevel, 100)}</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden border border-slate-700/50">
+          <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${xpInLevel}%`, background: 'linear-gradient(90deg,#34D399,#2DD4BF)', boxShadow: xpInLevel > 0 ? '0 0 8px -1px rgba(52,211,153,0.9)' : 'none' }}
+              style={{ width: `${xpInLevel}%`, background: '#639922' }}
             />
           </div>
         </div>
 
         <div
           key={displayText}
-          className="fc-anim-pop relative text-base font-semibold leading-snug text-white w-full px-5 py-4 min-h-[4rem] flex items-center justify-center rounded-2xl"
-          style={{
-            background: 'rgba(45,212,191,0.08)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: '1px solid rgba(94,234,212,0.35)',
-            textShadow: '0 0 20px rgba(94,234,212,0.6)',
-            boxShadow: '0 0 30px -8px rgba(45,212,191,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
-          }}
+          className="fc-anim-pop relative text-base font-semibold leading-snug text-slate-800 w-full px-5 py-4 min-h-[4rem] flex items-center justify-center rounded-2xl"
+          style={{ background: '#E6F1FB', border: '1px solid #B5D4F4' }}
         >
           <span>
             {displayText}
@@ -1912,7 +1905,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
 
       {/* category quick-replies, styled like chat chips replying to Grisha */}
       <div>
-        <p className="fc-mono text-[10px] tracking-widest text-slate-500 mb-1.5">{t.categoriesLabel}</p>
+        <p className="fc-mono text-[10px] tracking-widest text-slate-400 mb-1.5">{t.categoriesLabel}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
           {categoryIds.map((id) => {
             const meta = t.categories[id];
@@ -1924,10 +1917,10 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
               <button
                 key={id}
                 onClick={() => handleCategoryChange(id)}
-                className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold border-2 backdrop-blur-sm transition active:scale-95 ${
+                className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold border-2 transition active:scale-95 ${
                   id === 'personal' ? 'col-span-2 sm:col-span-1' : ''
-                } ${active ? 'bg-slate-800/40' : 'bg-slate-800/40 border-slate-700 text-slate-300 hover:border-slate-500'}`}
-                style={active ? { borderColor: solidHex, color: solidHex, boxShadow: `0 0 16px -4px ${style.ring}` } : {}}
+                } ${active ? 'bg-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
+                style={active ? { borderColor: solidHex, color: solidHex, background: `${solidHex}14` } : {}}
               >
                 <Icon size={15} />
                 {meta.label}
@@ -1936,7 +1929,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
           })}
         </div>
 
-        <p className="text-base font-bold text-white mb-2.5 mt-5 pt-4 border-t border-slate-800">{t.heroGreeting}</p>
+        <p className="text-base font-bold text-slate-900 mb-2.5 mt-5 pt-4 border-t border-slate-100">{t.heroGreeting}</p>
         <div className="flex flex-col gap-2.5 mb-1">
           <div className="relative">
             <input
@@ -1945,12 +1938,12 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
               onKeyDown={(e) => e.key === 'Enter' && handleBreakDown()}
               onFocus={() => setDeadlinePanelOpen(true)}
               placeholder={catMeta.placeholder}
-              className="fc-input-glow w-full rounded-xl bg-slate-950/80 border-2 border-slate-700 pl-5 pr-12 py-4 text-slate-100 text-base placeholder-slate-600 outline-none transition"
+              className="fc-input-glow w-full rounded-xl bg-white border-2 border-slate-200 pl-5 pr-12 py-4 text-slate-800 text-base placeholder-slate-400 outline-none transition"
             />
             <button
               type="button"
               onClick={() => setDeadlinePanelOpen((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-amber-300 transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-amber-600 transition"
               aria-label={t.deadlineLabel}
               title={t.deadlineLabel}
             >
@@ -1958,8 +1951,8 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
             </button>
           </div>
           {deadlinePanelOpen && (
-          <div className="fc-slide-down mt-2 pt-4 border-t border-slate-800">
-            <p className="fc-mono text-[9px] tracking-widest text-slate-500 mb-1.5">{t.deadlineLabel}</p>
+          <div className="fc-slide-down mt-2 pt-4 border-t border-slate-100">
+            <p className="fc-mono text-[9px] tracking-widest text-slate-400 mb-1.5">{t.deadlineLabel}</p>
             <div className="flex flex-wrap gap-1.5 mb-2">
               {DEADLINE_OPTIONS.map((code) => (
                 <button
@@ -1970,23 +1963,22 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                   }}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition border ${
                     deadline === code && !customDeadline
-                      ? 'text-amber-200 border-amber-400/70 bg-amber-500/10'
-                      : 'bg-slate-950/70 border-slate-700 text-slate-400 hover:border-amber-400/40'
+                      ? 'text-amber-700 border-amber-300 bg-amber-50'
+                      : 'bg-white border-slate-200 text-slate-500 hover:border-amber-300'
                   }`}
-                  style={deadline === code && !customDeadline ? { boxShadow: '0 0 12px -3px rgba(245,158,11,0.7)' } : {}}
                 >
                   {t.deadlineOptions[code]}
                 </button>
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <span className="fc-mono text-[10px] text-slate-500 flex-shrink-0">{t.orExactDate}</span>
+              <span className="fc-mono text-[10px] text-slate-400 flex-shrink-0">{t.orExactDate}</span>
               <input
                 type="date"
                 value={customDeadline}
                 onChange={(e) => setCustomDeadline(e.target.value)}
-                className={`rounded-lg bg-slate-950/80 border px-2 py-1.5 text-slate-100 text-xs outline-none focus:ring-2 focus:ring-amber-500/30 transition ${
-                  customDeadline ? 'border-amber-400/60' : 'border-slate-700'
+                className={`rounded-lg bg-white border px-2 py-1.5 text-slate-800 text-xs outline-none focus:ring-2 focus:ring-amber-400/30 transition ${
+                  customDeadline ? 'border-amber-300' : 'border-slate-200'
                 }`}
               />
             </div>
@@ -1995,18 +1987,16 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
           <button
             onClick={handleBreakDown}
             disabled={loading || !input.trim()}
-            className={`mt-1 rounded-xl disabled:cursor-not-allowed font-extrabold px-6 py-4 text-base flex items-center justify-center gap-2 transition active:scale-95 whitespace-nowrap border-2 backdrop-blur-sm bg-slate-800/40 ${
-              !loading && input.trim() ? 'fc-cta-pulse' : ''
-            }`}
+            className={`mt-1 rounded-xl disabled:cursor-not-allowed font-extrabold px-6 py-4 text-base flex items-center justify-center gap-2 transition active:scale-95 whitespace-nowrap text-white`}
             style={
               loading || !input.trim()
-                ? { borderColor: 'rgba(245,158,11,0.3)', color: '#a16207' }
-                : { borderColor: '#FBBF24', color: '#FBBF24', boxShadow: '0 0 24px -6px rgba(251,191,36,0.9)' }
+                ? { background: '#F0997B' }
+                : { background: '#D85A30' }
             }
           >
             {loading ? (
               <>
-                <span className="w-4 h-4 rounded-full border-2 border-amber-200/30 border-t-amber-200 animate-spin" />
+                <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
                 {t.buttonLoading}
               </>
             ) : (
@@ -2019,7 +2009,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
         </div>
 
         {quests.length === 0 && !loading && (
-          <p className="text-sm text-slate-500 italic mt-2 flex items-center gap-1.5">
+          <p className="text-sm text-slate-400 italic mt-2 flex items-center gap-1.5">
             <span aria-hidden="true">←</span>
             {t.emptyBreak}
           </p>
@@ -2031,11 +2021,11 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
         const visibleQuests = quests.filter((q) => q.category === category && (q.mode || 'personal') === mode);
         if (visibleQuests.length === 0) {
           if (quests.length === 0) return null;
-          return <p className="mt-4 text-sm text-slate-500 italic">{t.noQuestsInFilter}</p>;
+          return <p className="mt-4 text-sm text-slate-400 italic">{t.noQuestsInFilter}</p>;
         }
         return (
-          <div className="mt-5 pt-4 border-t border-slate-800 space-y-3">
-            {visibleQuests.length > 1 && <p className="fc-mono text-[10px] tracking-[0.15em] text-slate-500">{t.questListTitle(visibleQuests.length)}</p>}
+          <div className="mt-5 pt-4 border-t border-slate-100 space-y-3">
+            {visibleQuests.length > 1 && <p className="fc-mono text-[10px] tracking-[0.15em] text-slate-400">{t.questListTitle(visibleQuests.length)}</p>}
             {visibleQuests.map((q) => {
               const style = CATEGORY_STYLE[q.category];
               const Icon = style.icon;
@@ -2043,26 +2033,26 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
             const planPct = Math.round((doneCount / q.steps.length) * 100);
 
             return (
-              <div key={q.id} className="fc-anim-pop border-l-2 border-emerald-400/30 pl-4 relative">
+              <div key={q.id} className="fc-anim-pop border-l-2 border-slate-200 pl-4 relative">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="flex items-center gap-2 min-w-0">
                     <Icon size={13} className="text-slate-400 flex-shrink-0" />
-                    <p className="text-sm font-semibold text-white truncate">{q.goal}</p>
+                    <p className="text-sm font-semibold text-slate-900 truncate">{q.goal}</p>
                   </div>
-                  <button onClick={() => removeQuest(q.id)} className="text-slate-600 hover:text-slate-400 transition flex-shrink-0 p-1" aria-label={t.deleteQuest} title={t.deleteQuest}>
+                  <button onClick={() => removeQuest(q.id)} className="text-slate-400 hover:text-slate-600 transition flex-shrink-0 p-1" aria-label={t.deleteQuest} title={t.deleteQuest}>
                     <X size={14} />
                   </button>
                 </div>
-                {q.deadlineDate && <p className="fc-mono text-[10px] text-amber-300/70 mb-2">{t.deadlineBy}: {q.deadlineDate}</p>}
+                {q.deadlineDate && <p className="fc-mono text-[10px] text-amber-600 mb-2">{t.deadlineBy}: {q.deadlineDate}</p>}
 
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="fc-mono text-[10px] text-slate-400">{t.planProgress}</p>
                   <p className="fc-mono text-[10px] text-slate-400">{planPct}%</p>
                 </div>
-                <div className="w-full h-3 rounded-full bg-slate-800/80 overflow-hidden mb-3 border border-slate-700/50">
+                <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden mb-3 border border-slate-200">
                   <div
                     className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${planPct}%`, background: style.grad, boxShadow: planPct > 0 ? `0 0 10px -1px ${style.ring}` : 'none' }}
+                    style={{ width: `${planPct}%`, background: style.grad }}
                   />
                 </div>
 
@@ -2079,7 +2069,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                       };
                       return (
                         <li key={s.id}>
-                          <div className="flex items-center gap-2 rounded-xl px-3 py-2 border border-emerald-400/50 bg-slate-950/70">
+                          <div className="flex items-center gap-2 rounded-xl px-3 py-2 border border-emerald-300 bg-white">
                             <input
                               autoFocus
                               value={editDraft}
@@ -2088,12 +2078,12 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                                 if (e.key === 'Enter') saveEdit();
                                 if (e.key === 'Escape') setEditingStepId(null);
                               }}
-                              className="flex-1 bg-transparent text-sm text-white outline-none"
+                              className="flex-1 bg-transparent text-sm text-slate-800 outline-none"
                             />
-                            <button onClick={saveEdit} className="text-emerald-400 hover:text-emerald-300 flex-shrink-0 p-1" aria-label={t.saveEdit}>
+                            <button onClick={saveEdit} className="text-emerald-600 hover:text-emerald-500 flex-shrink-0 p-1" aria-label={t.saveEdit}>
                               <Check size={16} />
                             </button>
-                            <button onClick={() => setEditingStepId(null)} className="text-slate-500 hover:text-slate-300 flex-shrink-0 p-1" aria-label={t.cancelEdit}>
+                            <button onClick={() => setEditingStepId(null)} className="text-slate-400 hover:text-slate-600 flex-shrink-0 p-1" aria-label={t.cancelEdit}>
                               <X size={16} />
                             </button>
                           </div>
@@ -2107,30 +2097,30 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                           onClick={() => toggleStep(q.id, s.id)}
                           className={`w-full flex items-center gap-3 rounded-xl px-4 py-3.5 pr-11 text-left text-sm transition active:scale-[0.99] border ${
                             s.done
-                              ? 'bg-emerald-500/10 border-emerald-400/50 text-emerald-100'
+                              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                               : isNext
-                              ? 'bg-amber-500/10 border-amber-400/60 text-white'
-                              : 'bg-slate-950/70 border-slate-700 text-slate-300 hover:border-slate-500'
+                              ? 'bg-amber-50 border-amber-300 text-slate-800'
+                              : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                           }`}
                         >
                           <span className="relative flex-shrink-0">
                             <span
                               className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition ${
-                                s.done ? 'bg-emerald-400 border-emerald-400' : isNext ? 'border-amber-400' : 'border-slate-500'
+                                s.done ? 'bg-emerald-500 border-emerald-500' : isNext ? 'border-amber-400' : 'border-slate-300'
                               } ${justCompletedId === s.id ? 'fc-triumph-flash' : ''}`}
                             >
-                              {s.done && <Check size={14} className="text-slate-950" strokeWidth={3.5} />}
+                              {s.done && <Check size={14} className="text-white" strokeWidth={3.5} />}
                             </span>
                             {floatingXpId === s.id && (
-                              <span className="fc-float-xp absolute left-1/2 -top-1 fc-mono text-[11px] font-bold text-emerald-300 whitespace-nowrap pointer-events-none" style={{ textShadow: '0 0 8px rgba(52,211,153,0.9)' }}>
+                              <span className="fc-float-xp absolute left-1/2 -top-1 fc-mono text-[11px] font-bold text-emerald-600 whitespace-nowrap pointer-events-none">
                                 {t.xpPopup}
                               </span>
                             )}
                           </span>
-                          <span className={`fc-mono text-[10px] flex-shrink-0 ${s.done ? 'text-emerald-300/80' : isNext ? 'text-amber-300' : 'text-slate-500'}`}>
+                          <span className={`fc-mono text-[10px] flex-shrink-0 ${s.done ? 'text-emerald-600' : isNext ? 'text-amber-600' : 'text-slate-400'}`}>
                             {String(i + 1).padStart(2, '0')}
                           </span>
-                          <span className={s.done ? 'line-through decoration-emerald-400/50' : isNext ? 'font-medium' : ''}>{s.text}</span>
+                          <span className={s.done ? 'line-through decoration-emerald-400' : isNext ? 'font-medium' : ''}>{s.text}</span>
                         </button>
                         <button
                           onClick={(e) => {
@@ -2138,7 +2128,7 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
                             setEditDraft(s.text);
                             setEditingStepId(s.id);
                           }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-300 p-1.5 opacity-0 group-hover:opacity-100 transition"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1.5 opacity-0 group-hover:opacity-100 transition"
                           aria-label={t.editStep}
                           title={t.editStep}
                         >
@@ -2151,13 +2141,13 @@ function GrishaHero({ t, lang, mood, phraseText, tasksDone, mode, quests, setQue
 
                 <div
                   className={`relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition border ${
-                    q.completed ? 'bg-amber-500/15 border-amber-400/60 fc-anim-unlock' : 'bg-slate-950/40 border-slate-800'
+                    q.completed ? 'bg-amber-50 border-amber-300 fc-anim-unlock' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
                   <span className="text-lg flex-shrink-0">🏁</span>
-                  <span className={q.completed ? 'text-amber-200 font-semibold' : 'text-slate-500'}>{q.completed ? t.allDone : t.questFinish}</span>
+                  <span className={q.completed ? 'text-amber-700 font-semibold' : 'text-slate-400'}>{q.completed ? t.allDone : t.questFinish}</span>
                   {cupDropQuestId === q.id && (
-                    <span className="fc-float-xp absolute left-1/2 top-0 fc-mono text-[11px] font-bold text-amber-300 whitespace-nowrap pointer-events-none" style={{ textShadow: '0 0 8px rgba(245,158,11,0.9)' }}>
+                    <span className="fc-float-xp absolute left-1/2 top-0 fc-mono text-[11px] font-bold text-amber-600 whitespace-nowrap pointer-events-none">
                       {t.cupDropPopup}
                     </span>
                   )}
@@ -2313,13 +2303,13 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
         <div className="fc-anim-pop flex items-center gap-3 flex-wrap">
           <div
             className="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0"
-            style={{ borderColor: 'rgba(45,212,191,0.5)', background: 'radial-gradient(circle,rgba(45,212,191,0.15),transparent 70%)' }}
+            style={{ borderColor: '#B5D4F4', background: '#E6F1FB' }}
           >
-            <TimerIcon size={16} className="text-emerald-300" />
+            <TimerIcon size={16} className="text-blue-600" />
           </div>
           <div className="flex-shrink-0 mr-1">
-            <p className="fc-display text-sm font-bold text-white leading-tight">{t.timerTitle}</p>
-            <p className="text-[11px] text-slate-500 leading-tight">{t.timerSubtitle}</p>
+            <p className="fc-display text-sm font-bold text-slate-900 leading-tight">{t.timerTitle}</p>
+            <p className="text-[11px] text-slate-400 leading-tight">{t.timerSubtitle}</p>
           </div>
           <div className="flex gap-1.5 flex-shrink-0">
             {DURATIONS.map((m) => (
@@ -2329,10 +2319,9 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
                   onActivity();
                   setDuration(m);
                 }}
-                className={`px-3 py-2 rounded-lg text-xs font-bold border backdrop-blur-sm transition active:scale-95 ${
-                  duration === m ? 'bg-slate-800/40 border-emerald-400' : 'bg-slate-800/40 border-slate-700 text-slate-300 hover:border-emerald-400/50'
+                className={`px-3 py-2 rounded-lg text-xs font-bold border transition active:scale-95 ${
+                  duration === m ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-white border-slate-200 text-slate-500 hover:border-emerald-300'
                 }`}
-                style={duration === m ? { color: '#5EEAD4', boxShadow: '0 0 10px -2px rgba(52,211,153,0.8)' } : {}}
               >
                 {t.minutesLabel(m)}
               </button>
@@ -2340,8 +2329,8 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
           </div>
           <button
             onClick={start}
-            className="ml-auto flex-shrink-0 rounded-xl text-slate-950 font-bold px-5 py-2.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
-            style={{ background: 'linear-gradient(135deg,#34D399,#2DD4BF)', boxShadow: '0 0 20px -4px rgba(45,212,191,0.8)' }}
+            className="ml-auto flex-shrink-0 rounded-xl text-white font-bold px-5 py-2.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
+            style={{ background: '#639922' }}
           >
             <Play size={14} />
             {t.startButton}
@@ -2350,55 +2339,55 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
       ) : (
         /* ---------------- EXPANDED (running / celebrating) ---------------- */
         <div className="fc-anim-pop">
-          <div className="flex items-center gap-2 fc-mono text-[10px] tracking-[0.2em] mb-2" style={{ color: '#FCD34D' }}>
+          <div className="flex items-center gap-2 fc-mono text-[10px] tracking-[0.2em] mb-2 text-amber-600">
             <TimerIcon size={13} />
             <span>FOCUS SESSION</span>
           </div>
-          <h3 className="fc-display text-lg font-bold text-white mb-1">{t.timerTitle}</h3>
+          <h3 className="fc-display text-lg font-bold text-slate-900 mb-1">{t.timerTitle}</h3>
           <p className="text-sm text-slate-400 mb-5">{t.timerSubtitle}</p>
 
           <div className="flex flex-col items-center">
             <div className="relative w-40 h-40 mb-5 flex items-center justify-center">
               <Sparks sparks={sparks} />
               <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                <circle cx="60" cy="60" r={RING_R} fill="none" stroke="#1e293b" strokeWidth="6" />
+                <circle cx="60" cy="60" r={RING_R} fill="none" stroke="#EEF0F3" strokeWidth="6" />
                 <circle
                   cx="60" cy="60" r={RING_R} fill="none" stroke={ringColorVar} strokeWidth="6" strokeLinecap="round"
                   strokeDasharray={RING_C} strokeDashoffset={running ? dashOffset : 0}
-                  style={{ transition: 'stroke-dashoffset 0.15s linear, stroke 0.4s ease', filter: `drop-shadow(0 0 6px ${ringColorVar})` }}
+                  style={{ transition: 'stroke-dashoffset 0.15s linear, stroke 0.4s ease' }}
                   className={nearEnd && running && !paused ? 'fc-ring-pulse' : ''}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 {running ? (
                   <>
-                    <span className="fc-mono text-2xl font-bold text-white tracking-wider" style={{ textShadow: `0 0 16px ${ringColorVar}80` }}>
+                    <span className="fc-mono text-2xl font-bold text-slate-800 tracking-wider">
                       {mm}:{ss}
                     </span>
                     <span className="fc-mono text-[9px] tracking-[0.2em] text-slate-400 mt-1">{paused ? t.pausedBanner : t.remainingLabel}</span>
                   </>
                 ) : (
-                  <Award size={30} className="text-amber-400" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 10px rgba(245,158,11,0.7))' }} />
+                  <Award size={30} className="text-amber-500" strokeWidth={1.5} />
                 )}
               </div>
             </div>
 
             {running && !paused && (
-              <div className="fc-anim-pop mb-4 flex items-center gap-2 bg-slate-950/80 border border-amber-400/50 text-amber-300 fc-mono text-[10px] tracking-[0.1em] px-3 py-1.5 rounded-full" style={{ boxShadow: '0 0 14px -2px rgba(245,158,11,0.5)' }}>
+              <div className="fc-anim-pop mb-4 flex items-center gap-2 bg-amber-50 border border-amber-300 text-amber-700 fc-mono text-[10px] tracking-[0.1em] px-3 py-1.5 rounded-full">
                 <Lock size={11} />
                 {t.lockedBanner}
               </div>
             )}
 
-            {!running && praise && <div className="fc-anim-pop mb-4 text-center text-amber-200 text-sm font-semibold max-w-[16rem]">{praise}</div>}
+            {!running && praise && <div className="fc-anim-pop mb-4 text-center text-amber-700 text-sm font-semibold max-w-[16rem]">{praise}</div>}
 
             {running ? (
               <div className="w-full flex gap-2">
                 {paused ? (
                   <button
                     onClick={resume}
-                    className="flex-1 rounded-xl text-slate-950 font-bold px-4 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
-                    style={{ background: 'linear-gradient(135deg,#34D399,#2DD4BF)', boxShadow: '0 0 24px -4px rgba(45,212,191,0.8)' }}
+                    className="flex-1 rounded-xl text-white font-bold px-4 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
+                    style={{ background: '#639922' }}
                   >
                     <Play size={15} />
                     {t.resumeButton}
@@ -2406,7 +2395,7 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
                 ) : (
                   <button
                     onClick={pause}
-                    className="flex-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-bold px-4 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95 border border-slate-700"
+                    className="flex-1 rounded-xl bg-white hover:bg-slate-50 text-slate-600 font-bold px-4 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95 border border-slate-200"
                   >
                     <Pause size={15} />
                     {t.pauseButton}
@@ -2414,8 +2403,8 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
                 )}
                 <button
                   onClick={finishSession}
-                  className="rounded-xl text-slate-950 font-bold px-4 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
-                  style={{ background: 'linear-gradient(135deg,#FBBF24,#F59E0B)', boxShadow: '0 0 24px -4px rgba(245,158,11,0.8)' }}
+                  className="rounded-xl text-white font-bold px-4 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95"
+                  style={{ background: '#EF9F27' }}
                   aria-label={t.finishEarly}
                   title={t.finishEarly}
                 >
@@ -2423,7 +2412,7 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
                 </button>
                 <button
                   onClick={cancel}
-                  className="rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium px-4 py-3.5 text-sm flex items-center justify-center transition active:scale-95 border border-slate-700"
+                  className="rounded-xl bg-white hover:bg-slate-50 text-slate-500 font-medium px-4 py-3.5 text-sm flex items-center justify-center transition active:scale-95 border border-slate-200"
                   aria-label={t.cancelButton}
                   title={t.cancelButton}
                 >
@@ -2433,8 +2422,8 @@ function FocusTimer({ t, onSessionComplete, onActivity }) {
             ) : (
               <button
                 onClick={start}
-                className="w-full rounded-xl font-bold px-5 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95 border-2 backdrop-blur-sm bg-slate-800/40"
-                style={{ borderColor: '#34D399', color: '#5EEAD4', boxShadow: '0 0 24px -6px rgba(52,211,153,0.9)' }}
+                className="w-full rounded-xl font-bold px-5 py-3.5 text-sm flex items-center justify-center gap-2 transition active:scale-95 border-2 bg-white"
+                style={{ borderColor: '#639922', color: '#3B6D11' }}
               >
                 <Play size={15} />
                 {t.startButton}

@@ -915,9 +915,9 @@ function AmbientGlow() {
 function Modal({ open, onClose, children }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-950/70 backdrop-blur-sm" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="fc-modal-in fc-card fc-glow-mint rounded-2xl p-6 w-full max-w-md relative border-emerald-400/25">
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white transition" aria-label="close">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-900/40 backdrop-blur-sm" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="fc-modal-in fc-card rounded-2xl p-6 w-full max-w-md relative">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition" aria-label="close">
           <X size={18} />
         </button>
         {children}
@@ -929,15 +929,15 @@ function Modal({ open, onClose, children }) {
 function TipsModal({ t, open, onClose }) {
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="flex items-center gap-2 mb-4 text-amber-300">
+      <div className="flex items-center gap-2 mb-4 text-amber-600">
         <Lightbulb size={18} />
-        <h3 className="fc-display text-lg font-bold text-white">{t.tipsTitle}</h3>
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.tipsTitle}</h3>
       </div>
       <div className="space-y-3">
         {t.tips.map((tip, i) => (
-          <div key={i} className="rounded-xl bg-slate-950/60 border border-slate-700/70 px-4 py-3">
-            <p className="fc-mono text-[10px] tracking-widest text-emerald-300/80 mb-1">{String(i + 1).padStart(2, '0')}</p>
-            <p className="text-sm font-semibold text-slate-100 mb-1">{tip.title}</p>
+          <div key={i} className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">
+            <p className="fc-mono text-[10px] tracking-widest text-emerald-600 mb-1">{String(i + 1).padStart(2, '0')}</p>
+            <p className="text-sm font-semibold text-slate-800 mb-1">{tip.title}</p>
             <p className="text-[13px] text-slate-400 leading-relaxed">{tip.desc}</p>
           </div>
         ))}
@@ -957,19 +957,19 @@ function CookieBanner({ t, consent, onChoice }) {
   if (consent) return null;
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 flex justify-center">
-      <div className="fc-modal-in fc-card fc-glow-mint rounded-2xl p-4 sm:p-5 w-full max-w-2xl border-emerald-400/25 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <p className="text-[13px] text-slate-300 leading-relaxed flex-1">{t.cookieText}</p>
+      <div className="fc-modal-in fc-card rounded-2xl p-4 sm:p-5 w-full max-w-2xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <p className="text-[13px] text-slate-500 leading-relaxed flex-1">{t.cookieText}</p>
         <div className="flex gap-2 flex-shrink-0 w-full sm:w-auto">
           <button
             onClick={() => onChoice('declined')}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold bg-slate-950/70 border border-slate-700 text-slate-300 hover:border-slate-500 transition"
+            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-500 hover:border-slate-300 transition"
           >
             {t.cookieDecline}
           </button>
           <button
             onClick={() => onChoice('accepted')}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition"
-            style={{ background: 'linear-gradient(135deg,#34D399,#2DD4BF)', color: '#0f172a' }}
+            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition text-white"
+            style={{ background: '#639922' }}
           >
             {t.cookieAccept}
           </button>
@@ -1008,35 +1008,35 @@ function ReviewsAppsModal({ t, open, onClose, user }) {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="flex items-center gap-2 mb-1 text-amber-300">
+      <div className="flex items-center gap-2 mb-1 text-amber-600">
         <MessageSquareQuote size={18} />
-        <h3 className="fc-display text-lg font-bold text-white">{t.reviewsTitle}</h3>
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.reviewsTitle}</h3>
       </div>
-      <p className="text-[12px] text-slate-500 italic mb-4">{t.reviewsPlaceholderNote}</p>
+      <p className="text-[12px] text-slate-400 italic mb-4">{t.reviewsPlaceholderNote}</p>
       <div className="space-y-3 mb-6">
         {t.reviews.map((r, i) => (
-          <div key={i} className="rounded-xl bg-slate-950/60 border border-slate-700/70 px-4 py-3">
-            <p className="text-sm text-slate-100 leading-relaxed mb-2">«{r.text}»</p>
-            <p className="fc-mono text-[10px] text-emerald-300/80">— {r.author}</p>
+          <div key={i} className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">
+            <p className="text-sm text-slate-700 leading-relaxed mb-2">«{r.text}»</p>
+            <p className="fc-mono text-[10px] text-emerald-600">— {r.author}</p>
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-2 mb-3 text-emerald-300 pt-4 border-t border-slate-800">
+      <div className="flex items-center gap-2 mb-3 text-emerald-600 pt-4 border-t border-slate-100">
         <Smartphone size={18} />
-        <h3 className="fc-display text-lg font-bold text-white">{t.appsTitle}</h3>
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.appsTitle}</h3>
       </div>
-      <div className="rounded-xl bg-slate-950/60 border border-slate-700/70 px-4 py-4 text-center mb-6">
-        <p className="text-sm text-slate-300">{t.appsComingSoon}</p>
+      <div className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-4 text-center mb-6">
+        <p className="text-sm text-slate-500">{t.appsComingSoon}</p>
       </div>
 
-      <div className="flex items-center gap-2 mb-2 text-violet-300 pt-4 border-t border-slate-800">
+      <div className="flex items-center gap-2 mb-2 text-violet-600 pt-4 border-t border-slate-100">
         <Lightbulb size={18} />
-        <h3 className="fc-display text-lg font-bold text-white">{t.suggestTitle}</h3>
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.suggestTitle}</h3>
       </div>
       <p className="text-sm text-slate-400 mb-3">{t.suggestSubtitle}</p>
       {suggestSent ? (
-        <div className="rounded-xl bg-emerald-500/10 border border-emerald-400/40 px-4 py-3 text-sm text-emerald-200 text-center">
+        <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-700 text-center">
           {t.suggestThanks}
         </div>
       ) : (
@@ -1046,14 +1046,14 @@ function ReviewsAppsModal({ t, open, onClose, user }) {
             onChange={(e) => setSuggestion(e.target.value)}
             placeholder={t.suggestPlaceholder}
             rows={3}
-            className="w-full rounded-xl bg-slate-950/80 border border-slate-700 px-4 py-3 text-slate-100 placeholder-slate-600 text-sm outline-none focus:ring-2 focus:ring-violet-500/30 transition resize-none mb-2"
+            className="w-full rounded-xl bg-white border border-slate-200 px-4 py-3 text-slate-800 placeholder-slate-400 text-sm outline-none focus:ring-2 focus:ring-violet-400/30 transition resize-none mb-2"
           />
-          {suggestError && <p className="text-[12px] text-rose-400 mb-2">{suggestError}</p>}
+          {suggestError && <p className="text-[12px] text-rose-500 mb-2">{suggestError}</p>}
           <button
             onClick={submitSuggestion}
             disabled={suggestBusy || !suggestion.trim()}
-            className="w-full rounded-xl font-bold px-5 py-3 text-sm transition active:scale-95 disabled:opacity-50 border-2 bg-slate-800/40"
-            style={{ borderColor: '#A855F7', color: '#D8B4FE' }}
+            className="w-full rounded-xl font-bold px-5 py-3 text-sm transition active:scale-95 disabled:opacity-50 border-2 bg-white"
+            style={{ borderColor: '#9F7AEA', color: '#534AB7' }}
           >
             {suggestBusy ? t.suggestSending : t.suggestSend}
           </button>
@@ -1075,16 +1075,16 @@ function ReviewsAppsModal({ t, open, onClose, user }) {
 function LegalModal({ title, sections, disclaimer, open, onClose }) {
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="flex items-center gap-2 mb-3 text-emerald-300">
-        <h3 className="fc-display text-lg font-bold text-white">{title}</h3>
+      <div className="flex items-center gap-2 mb-3 text-emerald-600">
+        <h3 className="fc-display text-lg font-bold text-slate-900">{title}</h3>
       </div>
-      <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-200 text-[12px] leading-relaxed px-3 py-2.5 mb-4">
+      <div className="rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-[12px] leading-relaxed px-3 py-2.5 mb-4">
         {disclaimer}
       </div>
       <div className="space-y-3 max-h-[50vh] overflow-y-auto fc-scrollbar pr-1">
         {sections.map((s, i) => (
           <div key={i}>
-            <p className="text-sm font-semibold text-slate-100 mb-1">{s.h}</p>
+            <p className="text-sm font-semibold text-slate-800 mb-1">{s.h}</p>
             <p className="text-[13px] text-slate-400 leading-relaxed">{s.p}</p>
           </div>
         ))}
@@ -1103,35 +1103,35 @@ function GuideModal({ t, open, onClose }) {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="flex items-center gap-2 mb-4 text-emerald-300">
+      <div className="flex items-center gap-2 mb-4 text-emerald-600">
         <HelpCircle size={18} />
-        <h3 className="fc-display text-lg font-bold text-white">{t.guideTitle}</h3>
+        <h3 className="fc-display text-lg font-bold text-slate-900">{t.guideTitle}</h3>
       </div>
       <div className="flex items-center gap-1.5 mb-4">
         {steps.map((_, i) => (
-          <span key={i} className="h-1.5 flex-1 rounded-full transition-colors" style={{ background: i <= step ? 'linear-gradient(90deg,#34D399,#F59E0B)' : 'rgba(148,163,184,0.2)' }} />
+          <span key={i} className="h-1.5 flex-1 rounded-full transition-colors" style={{ background: i <= step ? 'linear-gradient(90deg,#34D399,#F59E0B)' : '#E7E9ED' }} />
         ))}
       </div>
       <div key={step} className="fc-anim-pop min-h-[6.5rem]">
-        <p className="fc-mono text-[10px] tracking-widest text-amber-300/80 mb-1">
+        <p className="fc-mono text-[10px] tracking-widest text-amber-600 mb-1">
           {String(step + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}
         </p>
-        <p className="text-base font-bold text-white mb-1.5">{steps[step].title}</p>
+        <p className="text-base font-bold text-slate-900 mb-1.5">{steps[step].title}</p>
         <p className="text-sm text-slate-400 leading-relaxed">{steps[step].desc}</p>
       </div>
       <div className="flex items-center justify-between mt-5">
         <button
           onClick={() => setStep((s) => Math.max(0, s - 1))}
           disabled={step === 0}
-          className="flex items-center gap-1 text-sm text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400 transition"
+          className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-700 disabled:opacity-30 disabled:hover:text-slate-400 transition"
         >
           <ChevronLeft size={16} />
           {t.guideBack}
         </button>
         <button
           onClick={() => (isLast ? onClose() : setStep((s) => s + 1))}
-          className="flex items-center gap-1.5 rounded-xl text-slate-950 font-bold px-4 py-2.5 text-sm transition active:scale-95"
-          style={{ background: 'linear-gradient(135deg,#34D399,#2DD4BF)', boxShadow: '0 0 20px -4px rgba(45,212,191,0.7)' }}
+          className="flex items-center gap-1.5 rounded-xl text-white font-bold px-4 py-2.5 text-sm transition active:scale-95"
+          style={{ background: '#3B6D11' }}
         >
           {isLast ? t.guideDone : t.guideNext}
           {!isLast && <ChevronRight size={16} />}
@@ -1146,17 +1146,17 @@ function ReminderToast({ t, toast, onDismiss }) {
   return (
     <div className="fixed bottom-5 right-5 z-40 max-w-xs fc-toast-in">
       <div
-        className="rounded-xl px-4 py-3 flex items-start gap-3 border border-amber-400/40"
-        style={{ background: 'linear-gradient(180deg, #1e293b, #0f172a)', boxShadow: '0 12px 32px -8px rgba(0,0,0,0.6), 0 0 24px -6px rgba(245,158,11,0.4)' }}
+        className="rounded-xl px-4 py-3 flex items-start gap-3 border border-amber-200 bg-white"
+        style={{ boxShadow: '0 12px 32px -8px rgba(20,25,35,0.15)' }}
       >
-        <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-amber-300" style={{ background: 'rgba(245,158,11,0.15)' }}>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-amber-600 bg-amber-50">
           <Bell size={15} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="fc-mono text-[9px] tracking-widest text-amber-300/80 mb-0.5">{t.reminderLabel}</p>
-          <p className="text-sm text-slate-100 leading-snug">{toast.text}</p>
+          <p className="fc-mono text-[9px] tracking-widest text-amber-600 mb-0.5">{t.reminderLabel}</p>
+          <p className="text-sm text-slate-700 leading-snug">{toast.text}</p>
         </div>
-        <button onClick={onDismiss} className="text-slate-500 hover:text-white transition flex-shrink-0" aria-label="dismiss">
+        <button onClick={onDismiss} className="text-slate-400 hover:text-slate-700 transition flex-shrink-0" aria-label="dismiss">
           <X size={14} />
         </button>
       </div>
@@ -1393,25 +1393,25 @@ function CalendarModal({ t, open, onClose, selectedDate, setSelectedDate, tasksB
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-950/70 backdrop-blur-sm" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="fc-modal-in fc-card fc-glow-mint rounded-2xl p-4 sm:p-5 w-full max-w-md relative border-emerald-400/25">
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white transition" aria-label="close">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-900/40 backdrop-blur-sm" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="fc-modal-in fc-card rounded-2xl p-4 sm:p-5 w-full max-w-md relative">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition" aria-label="close">
           <X size={18} />
         </button>
 
         <div className="flex items-center justify-between mb-4 pr-8">
-          <button onClick={goPrev} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <button onClick={goPrev} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
             <ChevronLeft size={16} />
           </button>
-          <p className="fc-display text-sm font-bold text-white capitalize">{monthLabel}</p>
-          <button onClick={goNext} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <p className="fc-display text-sm font-bold text-slate-900 capitalize">{monthLabel}</p>
+          <button onClick={goNext} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
             <ChevronRight size={16} />
           </button>
         </div>
 
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1">
           {t.weekdaysShort.map((d) => (
-            <div key={d} className="fc-mono text-[8px] sm:text-[9px] text-center text-slate-500 py-1">{d}</div>
+            <div key={d} className="fc-mono text-[8px] sm:text-[9px] text-center text-slate-400 py-1">{d}</div>
           ))}
         </div>
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-3">
@@ -1429,12 +1429,12 @@ function CalendarModal({ t, open, onClose, selectedDate, setSelectedDate, tasksB
                   onClose();
                 }}
                 className={`aspect-square rounded-lg text-[11px] sm:text-xs flex flex-col items-center justify-center gap-0.5 border transition ${
-                  !inMonth ? 'text-slate-700 border-transparent' : isSelected ? 'font-bold border-emerald-400' : isToday ? 'text-emerald-300 font-bold border-transparent' : 'text-slate-300 border-transparent hover:bg-slate-800'
+                  !inMonth ? 'text-slate-300 border-transparent' : isSelected ? 'font-bold border-emerald-400' : isToday ? 'text-emerald-600 font-bold border-transparent' : 'text-slate-600 border-transparent hover:bg-slate-100'
                 }`}
-                style={isSelected ? { color: '#5EEAD4', background: 'rgba(52,211,153,0.1)', boxShadow: '0 0 10px -3px rgba(52,211,153,0.7)' } : {}}
+                style={isSelected ? { color: '#0F6E56', background: '#E1F5EE' } : {}}
               >
                 <span>{d.getDate()}</span>
-                <span className="w-1 h-1 rounded-full" style={{ background: hasTasks && inMonth ? '#F59E0B' : 'transparent' }} />
+                <span className="w-1 h-1 rounded-full" style={{ background: hasTasks && inMonth ? '#EF9F27' : 'transparent' }} />
               </button>
             );
           })}
@@ -1445,8 +1445,8 @@ function CalendarModal({ t, open, onClose, selectedDate, setSelectedDate, tasksB
             setSelectedDate(today);
             onClose();
           }}
-          className="w-full rounded-lg py-2 text-xs font-bold transition active:scale-95 border-2 bg-slate-800/40"
-          style={{ borderColor: '#34D399', color: '#5EEAD4' }}
+          className="w-full rounded-lg py-2 text-xs font-bold transition active:scale-95 border-2 bg-white"
+          style={{ borderColor: '#34D399', color: '#0F6E56' }}
         >
           {t.todayLabel}
         </button>
@@ -2530,16 +2530,15 @@ function RewardsVault({ t, tasksDone, sessionsDone, earlyBirdDone }) {
 /* ---------------------------------------------------------------------- */
 function LangToggle({ lang, setLang }) {
   return (
-    <div className="flex items-center gap-1 bg-slate-800/40 backdrop-blur-sm border border-slate-700 rounded-full p-1">
-      <Globe2 size={13} className="text-slate-500 ml-1.5" />
+    <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-full p-1">
+      <Globe2 size={13} className="text-slate-400 ml-1.5" />
       {['ru', 'en'].map((code) => (
         <button
           key={code}
           onClick={() => setLang(code)}
-          className={`fc-mono px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide transition border ${
-            lang === code ? 'border-emerald-400' : 'border-transparent text-slate-500 hover:text-slate-300'
+          className={`fc-mono px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide transition ${
+            lang === code ? 'bg-emerald-50 text-emerald-700' : 'text-slate-400 hover:text-slate-600'
           }`}
-          style={lang === code ? { color: '#5EEAD4', boxShadow: '0 0 10px -2px rgba(52,211,153,0.8)' } : {}}
         >
           {code}
         </button>
@@ -2558,15 +2557,14 @@ function LangToggle({ lang, setLang }) {
 /* ------------------------------------------------------------------------ */
 function ModeToggle({ t, mode, setMode }) {
   return (
-    <div className="flex items-center gap-1 bg-slate-800/40 backdrop-blur-sm border border-slate-700 rounded-full p-1">
+    <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-full p-1">
       {['personal', 'business'].map((m) => (
         <button
           key={m}
           onClick={() => setMode(m)}
-          className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition whitespace-nowrap border ${
-            mode === m ? 'border-violet-400' : 'border-transparent text-slate-500 hover:text-slate-300'
+          className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition whitespace-nowrap ${
+            mode === m ? 'bg-violet-50 text-violet-700' : 'text-slate-400 hover:text-slate-600'
           }`}
-          style={mode === m ? { color: '#C4B5FD', boxShadow: '0 0 10px -2px rgba(168,85,247,0.8)' } : {}}
         >
           {m === 'personal' ? t.modePersonal : t.modeBusiness}
         </button>

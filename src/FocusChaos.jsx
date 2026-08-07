@@ -1362,6 +1362,77 @@ function getMonthGrid(year, month) {
   });
 }
 
+function MiniCalendar({ t, selectedDate, setSelectedDate, tasksByDate }) {
+  const initial = selectedDate ? new Date(selectedDate + 'T00:00:00') : new Date();
+  const [viewYear, setViewYear] = useState(initial.getFullYear());
+  const [viewMonth, setViewMonth] = useState(initial.getMonth());
+
+  const grid = getMonthGrid(viewYear, viewMonth);
+  const today = todayKey();
+  const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleDateString(t.localeCode, { month: 'long', year: 'numeric' });
+
+  const goPrev = () => {
+    const d = new Date(viewYear, viewMonth - 1, 1);
+    setViewYear(d.getFullYear());
+    setViewMonth(d.getMonth());
+  };
+  const goNext = () => {
+    const d = new Date(viewYear, viewMonth + 1, 1);
+    setViewYear(d.getFullYear());
+    setViewMonth(d.getMonth());
+  };
+
+  return (
+    <div className="fc-card fc-glow-mint rounded-3xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <button onClick={goPrev} className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition">
+          <ChevronLeft size={15} />
+        </button>
+        <p className="fc-display text-sm font-bold text-slate-900 capitalize">{monthLabel}</p>
+        <button onClick={goNext} className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition">
+          <ChevronRight size={15} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
+        {t.weekdaysShort.map((d) => (
+          <div key={d} className="fc-mono text-[8px] text-center text-slate-400 py-1">{d}</div>
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-0.5 mb-3">
+        {grid.map((d) => {
+          const key = dateKeyOf(d);
+          const inMonth = d.getMonth() === viewMonth;
+          const isSelected = key === selectedDate;
+          const isToday = key === today;
+          const hasTasks = (tasksByDate[key] || []).length > 0;
+          return (
+            <button
+              key={key}
+              onClick={() => setSelectedDate(key)}
+              className={`aspect-square rounded-lg text-[11px] flex flex-col items-center justify-center gap-0.5 border transition ${
+                !inMonth ? 'text-slate-300 border-transparent' : isSelected ? 'font-bold border-emerald-400' : isToday ? 'text-emerald-600 font-bold border-transparent' : 'text-slate-600 border-transparent hover:bg-slate-100'
+              }`}
+              style={isSelected ? { color: '#0F6E56', background: '#E1F5EE' } : {}}
+            >
+              <span>{d.getDate()}</span>
+              <span className="w-1 h-1 rounded-full" style={{ background: hasTasks && inMonth ? '#EF9F27' : 'transparent' }} />
+            </button>
+          );
+        })}
+      </div>
+
+      <button
+        onClick={() => setSelectedDate(today)}
+        className="w-full rounded-lg py-2 text-xs font-bold transition active:scale-95 border-2 bg-white"
+        style={{ borderColor: '#34D399', color: '#0F6E56' }}
+      >
+        {t.todayLabel}
+      </button>
+    </div>
+  );
+}
+
 function CalendarModal({ t, open, onClose, selectedDate, setSelectedDate, tasksByDate }) {
   const initial = selectedDate ? new Date(selectedDate + 'T00:00:00') : new Date();
   const [viewYear, setViewYear] = useState(initial.getFullYear());
@@ -1560,14 +1631,6 @@ function DayTimeline({ t, selectedDate, setSelectedDate, tasksByDate, onToggleTa
             title={t.nextWeeks}
           >
             <ChevronRight size={15} />
-          </button>
-          <button
-            onClick={onOpenCalendar}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition"
-            aria-label={t.openCalendar}
-            title={t.openCalendar}
-          >
-            <CalendarDays size={15} />
           </button>
         </div>
       </div>
@@ -3060,11 +3123,16 @@ export default function FocusChaos() {
         </div>
 
         {tab === 'focus' ? (
-          <div className="fc-fade-up" style={{ animationDelay: '100ms' }}>
-            <div className="mb-4">
-              <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} onOpenCalendar={() => setCalendarOpen(true)} />
+          <div className="fc-fade-up grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 items-start" style={{ animationDelay: '100ms' }}>
+            {/* Sidebar — always visible: month calendar, focus timer, notes */}
+            <div className="flex flex-col gap-4 order-2 lg:order-1">
+              <MiniCalendar t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} />
+              <FocusTimer t={t} onSessionComplete={handleSessionCompleted} onActivity={registerActivity} />
+              <QuickNotes t={t} notes={notes} setNotes={setNotes} />
             </div>
-            <div className="mb-4">
+
+            {/* Main area — Grisha on top, week schedule below */}
+            <div className="flex flex-col gap-4 order-1 lg:order-2 min-w-0">
               <GrishaHero
                 t={t}
                 lang={lang}
@@ -3082,10 +3150,7 @@ export default function FocusChaos() {
                 levelUpMessage={levelUpMessage}
                 streak={streak}
               />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <FocusTimer t={t} onSessionComplete={handleSessionCompleted} onActivity={registerActivity} />
-              <QuickNotes t={t} notes={notes} setNotes={setNotes} />
+              <DayTimeline t={t} selectedDate={selectedDate} setSelectedDate={setSelectedDate} tasksByDate={tasksByDate} onToggleTask={toggleTask} onAddTask={addTask} onEditTask={editTask} onDeleteTask={deleteTask} onOpenCalendar={() => setCalendarOpen(true)} />
             </div>
           </div>
         ) : (
